@@ -1,0 +1,12 @@
+.table-dark th{background-color: rgb(201, 201, 201);border: 1px solid rgb(189, 189, 189) !important;color: rgb(58, 58, 58);font-weight: bold}
+.table-dark  tr:nth-child(odd) td{background-color: rgb(223, 223, 223);color: rgb(65, 65, 65)}
+.table-dark td{background-color: rgb(204, 204, 204);color: rgb(41, 41, 41);border: 1px solid rgb(199, 199, 199)}
+.Perd-Text{font-weight:bold;color:#cc5555 !important}
+.Ganh-Text{font-weight:bold;color:rgb(0, 107, 43) !important}
+.Aind-Text{font-weight:bold;color:#a3771e !important;}
+.Anul-Text{font-weight:bold;color:gray !important;}
+
+.green{font-weight:bold;color:rgb(0, 146, 58) !important}
+.green-dark{font-weight:bold;color:rgb(0, 139, 56) !important}
+.red{font-weight:bold;color:#c94646 !important}
+.yellow{font-weight:bold;color:#c08c23 !important}
