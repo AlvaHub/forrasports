@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import * as common from './Common';
 import { formatDate } from 'react-day-picker/moment';
 import MyModal from './MyModal';
-
+import CurrencyFormat from 'react-currency-format';
 
 class OddHistory extends Component {
   constructor(props) {
@@ -17,20 +17,39 @@ class OddHistory extends Component {
     itemsAll: [],
     sortField: '',
     itemsByOdd: [],
-    filter: '',
-    permissions: [],
-    bets_valid_count : 0,
-    data: {},
+    filter: {
+      user_id: common.getUser().id,
+      result: null,
+      show_bet_user : true
+    },
     stats: {
       odd_W: [], odd_L: [], odd_AN: [], odd_HW: [], odd_HL: []
-    }
-
+    },
+    bets_valid_count: 0,
+    proportion: 1,
+    bet_return: 0
   }
   barList() {
-    this.props.changeTitle({ left: null, center: 'Histórico' });
+    this.props.changeTitle({
+      left: null, center: <div className="pointer" onClick={this.bindList.bind(this)}>Histórico</div>,
+      right: <div>
+        <button className="btn btn-secondary btn-sm mr-3" onClick={this.getResults.bind(this)} >Atualizar</button>
+        <i className="fas fa-user mr-3 font-md pointer show-md" onClick={this.showBetUser.bind(this)} ></i>
+        <i className="fas fa-filter text-dark font-md show-md" onClick={this.showFilter.bind(this)}></i>
+      </div>
+    });
   }
   barForm = () => {
     this.props.changeTitle({ left: <div className="btn-back" onClick={this.back.bind(this)}><i className="fas fa-arrow-alt-circle-left"></i> Voltar</div> });
+  }
+  getResults = () => {
+    this.props.show();
+    var that = this;
+    common.getData('match_result.php').then((data) => {
+      that.props.hide();
+      if (data !== "1")
+        return alert("Não foi possível atualizar os resultados!");
+    });
   }
   bindList() {
     this.props.show();
@@ -64,8 +83,9 @@ class OddHistory extends Component {
           x.bet_result = 0;
         if (x.result && x.result !== "")
           bets_valid_count++;
-      })
-      this.setState({ items: data, itemsAll: data, bets_valid_count })
+      });
+      this.setState({ itemsAll: data, bets_valid_count});
+      this.processFilter();
     });
     common.getData('data/oddhistory.php?data=group_by_odd').then((itemsByOdd) => {
       this.setState({ itemsByOdd });
@@ -155,6 +175,10 @@ class OddHistory extends Component {
 
   }
   showStats = (index, e) => {
+
+    //If filter is open just close and do no action.
+    if (this.checkHideFilter()) return;
+
     let items = this.state.items;
     items[index].show = !items[index].show;
     this.setState({ items });
@@ -165,20 +189,84 @@ class OddHistory extends Component {
     items.forEach(x => x.show = showStatsAll);
     this.setState({ items, showStatsAll });
   }
-  filterResult = (result, e) => {
-    this.props.show();
-    let items = this.state.itemsAll;
-    if (this.state.last_filter_result !== result)
-      items = this.state.itemsAll.filter(x => x.result === result);
 
-    this.setState({ items, last_filter_result: this.state.last_filter_result === result ? "" : result });
-    setTimeout(() => {
-      this.props.hide();
-    }, 1000);
-  }
   showOddsTable = () => {
     this.setState({ showModal: true })
   }
+  showFilter() {
+    var css = document.getElementById('filter').className;
+    css = css.indexOf('hidden-md') > 0 ? 'filter' : 'filter hidden-md';
+    document.getElementById('filter').className = css;
+  }
+  hideFilter() {
+    document.getElementById('filter').className = 'filter hidden-md';
+  }
+  checkHideFilter = () => {
+    var css = document.getElementById('filter').className;
+    if (css.indexOf('hidden-md') < 0) {
+      document.getElementById('filter').className = 'filter hidden-md';
+      return true;
+    }
+    return false;
+  }
+  //FILTER RESULT
+  filterResult = (result, e) => {
+  
+    let items = this.state.itemsAll;
+    let filter = this.state.filter;
+    if (filter.last_result !== result)
+      filter.result = result;
+    else
+      filter.result = null;
+
+    filter.last_result = filter.last_result === result ? "" : result;
+    this.setState({ filter });
+    this.processFilter();
+ 
+  }
+  //FILTER USER
+  showBetUser = () => {
+    let filter = this.state.filter;
+    filter.show_bet_user = !filter.show_bet_user;
+    this.setState({ filter });
+    this.processFilter();
+  }
+  //FILTER USER SPECIFIC
+  showBetUserSpecific = (e) => {
+    let filter = this.state.filter;
+    filter.user_id = e.target.value;
+    filter.show_bet_user = true;
+    this.setState({ filter });
+    this.processFilter();
+  }
+   //PROCESS FILTER
+   processFilter = () => {
+  
+    setTimeout(() => { 
+      let filter = this.state.filter;
+      let items = this.state.itemsAll;
+      items = items.filter(x => (filter.result ? (x.result === filter.result) : true) &&
+      (!filter.show_bet_user ? true :  filter.user_id === "0" ? x.user_id != null :  (x.user_id + "").indexOf(filter.user_id) > -1));
+      
+      let bet_return = this.getBetReturn(items, this.state.proportion);
+      this.setState({ items, bet_return });
+    }, 1);
+   }
+  setProportion = (e) => {
+    if (e.target.value > 0) {
+      let bet_return = this.getBetReturn(this.state.items, Number(e.target.value));
+      this.setState({ proportion: Number(e.target.value), bet_return });
+    }
+  }
+  getBetReturn(items, proportion) {
+    var total = 0;
+    for (var i = 0; i < items.length; i++) {
+      total += isNaN(items[i]['bet_result']) ? 0 : Number(items[i]['bet_result'] * proportion);
+    }
+    return total;
+  }
+
+
   render() {
 
     return (
@@ -211,12 +299,12 @@ class OddHistory extends Component {
             </table>
           </div>
         </MyModal>
-        <div className="filter" id="filter" >
+        <div className="filter hidden-md" id="filter" >
           <div className="row no-gutters">
             <div className="col-md-2 p-sm-1">
               <input type="text" name="showStatsAll" className="form-control form-control-sm" placeholder="Buscar..." onChange={this.filter.bind(this)} />
             </div>
-            <div className="col-md-3 p-sm-1 no-overflow no-break">
+            <div className="col-md-2 p-sm-1 no-overflow no-break">
               <b>Qtd: </b>
               <div className="result-label result-W" onClick={this.filterResult.bind(this, "W")}>{this.state.items.filter(x => x.result === "W").length} </div>
               <div className="result-label result-L" onClick={this.filterResult.bind(this, "L")}>{this.state.items.filter(x => x.result === "L").length} </div>
@@ -232,16 +320,26 @@ class OddHistory extends Component {
               <div className="result-label result-HW" onClick={this.showOddsTable}>{this.state.stats.odd_HW.average()} </div>
               <div className="result-label result-HL" onClick={this.showOddsTable}>{this.state.stats.odd_HL.average()} </div>
             </div>
+            <div className="col-md-1 p-sm-1 no-overflow no-break align-self-center">
+              <select className="form-control form-control-sm" name="user_id" value={this.state.filter.user_id} onChange={this.showBetUserSpecific.bind(this)} >
+                <option value="0">T</option>
+                <option value="2">P</option>
+                <option value="1">A</option>
+              </select>
+            </div>
             <div className="col-md-4 p-sm-1 no-overflow no-break align-self-center">
-            <button className={'mr-2 btn btn-sm ' + (this.state.showStatsAll ? 'btn-secondary' : 'btn-outline-secondary')} onClick={this.showStatsAll}>Stats</button>
-              <b>Stake: </b><b className="text-primary">{common.formatNumber(this.state.bets_valid_count)}</b>
-              <b className="ml-2">Return: </b>{this.state.items.sum('bet_result', true)}
+              <i className="fas fa-user mr-2 font-lg pointer" onClick={this.showBetUser.bind(this)} ></i>
+              <button className={'mr-2 btn btn-sm ' + (this.state.showStatsAll ? 'btn-secondary' : 'btn-outline-secondary')} onClick={this.showStatsAll}>Stats</button>
+              <CurrencyFormat type="tel" className="form-control form-control-sm block-inline mr-2 no-focus" style={{ width: 50 }} onChange={this.setProportion.bind(this)} value={this.state.proportion} ></CurrencyFormat>
+              <b>Stake: </b><b className="text-secondary">{common.formatNumber(this.state.items.filter(y => y.result !== "").length * this.state.proportion)}</b>
+              <b className="ml-2">Return: </b>{common.formatNumber(this.state.bet_return, true)}
+              <b className="ml-2"></b>{((this.state.bet_return / (this.state.items.filter(y => y.result !== "").length * this.state.proportion)) * 100).toFixed(2)}%
             </div>
           </div>
         </div>
-        <div className="div-table" ></div>
+        <div className="margin-top-filter-md" ></div>
         <div id="list" className="table-responsive">
-          <table id="table-odds-history" className="table table-dark table-hover table-bordered table-striped table-sm  table-scroll table-odds-history w-100" onClick={this.checkHideFilter} >
+          <table id="table-odds-history" className="table table-dark table-hover table-bordered table-striped table-sm  table-scroll table-odds-history w-100" >
             <thead  >
               <tr>
                 <th></th>
@@ -260,7 +358,12 @@ class OddHistory extends Component {
             <tbody>
               {this.state.items.map((x, i) => <React.Fragment key={i}>
                 <tr onClick={this.showStats.bind(this, i)}>
-                  <td>{i + 1}</td>
+                  <td>{i + 1}
+                    {x.user_id && x.user_id.split(',').map((y, i) =>
+                      y === "1" ? <i key={i} className={'fas fa-user-graduate ml-1 float-right ' + x.result}></i> :
+                        <i  key={i} className={'fas fa-user ml-1 float-right ' + x.result}></i>
+                    )}
+                  </td>
                   <td>{formatDate(x.start, "DD/MM/YYYY HH:mm")}</td>
                   <td>{x.league_name}</td>
                   <td>{x.event_name}</td>
@@ -270,22 +373,22 @@ class OddHistory extends Component {
                   <td >{x.pin365.split(',').map((y, i) => <div key={i} className={this.formatP365(y)} >{y}</div>)} </td>
                   <td>{x.percent.split(',').map((y, i) => <div key={i} >{y}</div>)}</td>
                   <td>{x.created_at.split(',').map((y, i) => <div key={i} >{formatDate(y, "DD/MM HH:mm")}</div>)}</td>
-                  <td className={'result ' + x.result}><span>{x.result}</span></td>
+                  <td style={{ verticalAlign: 'middle' }} className={'result ' + x.result}><span>{x.result}</span></td>
                 </tr>
                 <tr hidden={!x.show}>
                   <td colSpan="100" className="match-stats">
                     <div className="row no-gutters" >
-                      <div className="col-md-3 item" >
+                      <div className="col-3 item" >
                         <div className="title text-light">Home Away</div>
                         <div><b>H: </b>{x.home_first} x {x.away_first}<b>F: </b>{x.home_full} x {x.away_full}</div>
                         <span className="text-total">{x.home_full} x {x.away_full}</span>
                       </div>
-                      <div className="col-md-3 alternate" >
+                      <div className="col-3 alternate" >
                         <div className="title text-primary">Goals Totals</div>
                         <div><b>H: </b>{x.goals_first}<b>F: </b>{x.goals_full}</div>
                         <b className="text-total">{x.goals_full}</b>
                       </div>
-                      <div className="col-md-3 item" >
+                      <div className="col-3 item" >
                         <div className="title text-success">Corners</div>
                         <div><b>H: </b>{x.corner_home_first} x {x.corner_away_first}
                           <b>F: </b>{x.corner_home_full} x {x.corner_away_full}
@@ -293,7 +396,7 @@ class OddHistory extends Component {
                             <b className="text-total">{x.corner_home_full && x.corner_away_full && parseInt(x.corner_home_full) + parseInt(x.corner_away_full)}</b>}
                         </div>
                       </div>
-                      <div className="col-md-3 alternate" >
+                      <div className="col-3 alternate" >
                         <div className="title text-danger">Cards</div>
                         <div><b>H: </b>{x.card_home_first} x {x.card_away_first}
                           <b>F: </b>{x.card_home_full} x {x.card_away_full}

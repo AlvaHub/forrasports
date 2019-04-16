@@ -60,7 +60,9 @@ class Odds extends Component {
     this.setState({ minutes });
 
     this.barList(false);
+    //BIND LIST
     this.bindList();
+    //GET FILTER CUSTOM
     common.getData('data/odds.php?data=filter_custom').then((dataList) => {
 
       for (let i = 0; i < dataList.length; i++) {
@@ -76,6 +78,13 @@ class Odds extends Component {
           }
         }
         this.setState({ customFilters: dataList, custom: dataList[0] });
+      }
+
+    });
+    //GET BET USER
+    common.getData("data/betuser.php?data=by_user&user_id=" + common.getUser().id).then((bets) => {
+      if (bets.length > 0) {
+        this.setState({ bets });
       }
 
     });
@@ -248,17 +257,37 @@ class Odds extends Component {
     this.setState({ [e.target.name]: e.target.value });
     setTimeout(() => { this.bindList(); }, 1);
   }
-  betAdd = (x, e) => {
+  betAdd = (x, index, e) => {
     let bets = this.state.bets;
-    bets.push(x);
-    this.setState({ bets, view_bets: true });
+    x.user_id = common.getUser().id;
+    if (bets.find(y => y.id_365 === x.id_365 && y.odd_name === x.odd_name) != null)
+      return alert('Aposta já adicionada!');
+
+    //Blink Effect
+    var row = document.getElementById('row_' + index);
+    row.className = row.className.replace(" add-blink", "");
+
+    common.postData("data/betuser.php?data=insert", x).then((data) => {
+      if (data === "1") {
+        bets.push(x);
+        this.setState({ bets });
+        //Blink Effect
+        row.className = row.className + " add-blink";
+      }
+    });
   }
   betRemove = (x, e) => {
 
     let bets = this.state.bets;
-    let index = bets.indexOf(x);
-    bets.splice(index, 1);
-    this.setState({ bets });
+    x.user_id = common.getUser().id;
+
+    common.postData("data/betuser.php?data=delete", x).then((data) => {
+      if (data === "1") {
+        let index = bets.indexOf(x);
+        bets.splice(index, 1);
+        this.setState({ bets });
+      }
+    });
   }
   loadData = () => {
 
@@ -350,7 +379,7 @@ class Odds extends Component {
     var that = this;
     common.getData('data/dataloading.php?data=clear_pinnacle').then(function (data) {
       if (data === "1")
-      that.setState({ clear_pin: true })
+        that.setState({ clear_pin: true })
     });
   }
   render() {
@@ -419,7 +448,7 @@ class Odds extends Component {
             </div>
             <div className="col-12 col-sm-5 align-self-center text-right pr-4 no-overflow no-break p-sm-1">
               <button type="button" name="viewBets" className={'ml-2  mr-1 btn btn-sm ' + (this.state.view_bets ? 'btn-secondary' : 'btn-outline-secondary')} onClick={() => { this.setState({ view_bets: !this.state.view_bets }) }}>Seleções</button>
-              <b>Qtd: </b><span className="mr-2">{this.state.bets.length}</span>
+              <b>Qtd: </b><span id="selected_qtd" className={'mr-2'}>{this.state.bets.length}</span>
               <button type="button" name="isGreen" className={'hidden-xs mr-2 btn btn-sm ' + (this.state.filter.isGreen ? 'btn-success' : 'btn-outline-success')} onClick={this.filterImportantClicked.bind(this)}>0.85</button>
               <button type="button" name="isYellow" className={'hidden-xs mr-2 btn btn-sm ' + (this.state.filter.isYellow ? 'btn-warning' : 'btn-outline-warning')} onClick={this.filterImportantClicked.bind(this)}>0.90</button>
               <button type="button" name="isRed" className={'hidden-xs mr-2 btn btn-sm ' + (this.state.filter.isRed ? 'btn-danger' : 'btn-outline-danger')} onClick={this.filterImportantClicked.bind(this)}>0.93</button>
@@ -450,8 +479,8 @@ class Odds extends Component {
                 </tr>
               </thead>
               <tbody>
-                {this.state.items.map((x, i) => <tr key={i}>
-                  <td onClick={this.betAdd.bind(this, x)} >{i + 1}</td>
+                {this.state.items.map((x, i) => <tr key={i} id={'row_' + i} >
+                  <td onClick={this.betAdd.bind(this, x, i)} id="" >{i + 1}</td>
                   <td>{formatDate(x.start, "DD/MM/YYYY HH:mm")}</td>
                   <td>{x.league_name}</td>
                   <td>{x.event_name}</td>
@@ -469,24 +498,20 @@ class Odds extends Component {
                   <thead  >
                     <tr>
                       <th></th>
-                      <th onClick={common.tableSort.bind(this, 'start')} >Data</th>
-                      <th onClick={common.tableSort.bind(this, 'league_name')} >Liga</th>
-                      <th onClick={common.tableSort.bind(this, 'event_name')} >Evento</th>
-                      <th onClick={common.tableSort.bind(this, 'odd_name')} >Mercado</th>
-                      <th onClick={common.tableSortNumber.bind(this, 'odd_365')} >A</th>
-                      <th onClick={common.tableSortNumber.bind(this, 'odd_pin')} >B</th>
-                      <th></th>
-                      <th onClick={common.tableSortNumber.bind(this, 'percent')} >% EV</th>
-                      {/* <th onClick={common.tableSortNumber.bind(this, 'odd_365_new')} >Bet365A</th>
-                  <th onClick={common.tableSortNumber.bind(this, 'odd_pin_new')} >PinnacleA</th>
-                  <th onClick={common.tableSortNumber.bind(this, 'percent_new')} >% New EV</th>
-                  <th onClick={common.tableSortNumber.bind(this, 'date_update')} >Atualização</th> */}
+                      <th>Data</th>
+                      <th>Liga</th>
+                      <th>Evento</th>
+                      <th>Mercado</th>
+                      <th>A</th>
+                      <th >B</th>
+                      <th>B/A</th>
+                      <th>% EV</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {this.state.bets.map((x, i) => <tr key={i} onClick={this.betRemove.bind(this, x)}>
-                      <td>{i + 1}</td>
-                      <td>{formatDate(x.start, "DD/MM/YYYY - hh:mm")}hs
+                    {this.state.bets.map((x, i) => <tr key={i}>
+                      <td onClick={this.betRemove.bind(this, x)} >{i + 1}</td>
+                      <td>{formatDate(x.start, "DD/MM/YYYY - HH:mm")}hs
                   <div>{x.atualizacao}</div>
                       </td>
                       <td>{x.league_name}</td>
@@ -499,7 +524,9 @@ class Odds extends Component {
                       <td>{x.odd_pin}
                         <div>{x.odd_pin_new}</div>
                       </td>
-                      <td></td>
+                      <td>
+                        {x.pin365}
+                      </td>
                       <td>
                         {x.percent}
                         <div>{x.percent_new}</div>

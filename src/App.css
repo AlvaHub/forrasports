@@ -32,9 +32,13 @@ body:before {
 .extra-margin-top{margin-top: 35px}
 .extra-margin-bottom{padding-bottom: 135px}
 .margin-top-filter{margin-top:45px}
+.margin-top-filter-md{margin-top:45px}
 @media(max-width:576px){
   .margin-top-filter{margin-top:0}
-  }
+}
+  @media(max-width:768px){
+    .margin-top-filter-md{margin-top:0}
+ }
 :root{
   --bg-main: rgb(20, 40, 59);
   --day2:linear-gradient(to bottom, rgb(4, 40, 95), rgb(2, 22, 53));
@@ -71,6 +75,7 @@ body:before {
 .last-update{font-weight: 'normal'; font-size:11px; display:block;margin-top:-2px}
 .p-0-5{padding: 2px}
 .no-overflow{overflow: hidden;}
+.no-focus:focus{outline-style: none !important;}
 .no-break{white-space: nowrap}
 @media(max-width:576px){
   .logo-left{display: none}
@@ -105,6 +110,13 @@ input[type='text'],input[type='number'],select,textarea {  font-size: 16px;}
 .date-combo select{height:35px}
 .hidden-xs{display:none !important}
 }
+@media(min-width:769px){
+  .show-md{display:none}
+  }
+  @media(max-width:768px){
+  .hidden-md{display:none !important}
+  }
+  
 
 .link:hover{color: orange;cursor: pointer;}
 @keyframes fade_in{  from{opacity: 0} to{opacity: 1}}
@@ -215,6 +227,13 @@ input[type='text'],input[type='number'],select,textarea {  font-size: 16px;}
   25%{background-color: rgb(71, 226, 133)}
   100%{background-color: #00C851}
 }
+/* blink label when bet is selected */
+.add-blink{animation: a_add_blink 1.2s;}
+@keyframes a_add_blink{
+  0%{background-color: transparent}
+  20%{background-color: rgb(145, 145, 145);}
+  100%{background-color: transparent}
+}
 /* ODDS HISTORY*/
 @media(min-width:577px){
 .table-odds-history.table-scroll>tbody::-webkit-scrollbar{display: inherit}
@@ -222,6 +241,10 @@ input[type='text'],input[type='number'],select,textarea {  font-size: 16px;}
 }
 .table-odds-history{min-width: 1100px;overflow-x: auto;  }
 .table-odds-history.table-scroll>tbody{max-height: calc(var(--window)  - 125px)}
+@media(max-width:768px){
+  .table-odds-history.table-scroll>tbody{max-height: calc(var(--window)  - 80px)}
+  .table-odds-history.table-scroll>tbody::-webkit-scrollbar{display: none}
+}
 .table-odds-history tbody td:nth-child(1), .table-odds-history thead th:nth-child(1){width: 5%}
 .table-odds-history tbody td:nth-child(2), .table-odds-history thead th:nth-child(2){width: 10%}
 .table-odds-history tbody td:nth-child(3), .table-odds-history thead th:nth-child(3){width: 15%}
@@ -251,6 +274,11 @@ input[type='text'],input[type='number'],select,textarea {  font-size: 16px;}
 .result-label{cursor:pointer;display: inline-block;margin: 0 3px 0 3px;min-width:30px;padding:4px;text-align: center;border-radius: 5px;border:1px solid rgb(187, 187, 187);font-weight: bold}
 .result-label.result-HW{background: linear-gradient(to right,#00C851,rgb(83, 83, 83))}
 .result-label.result-HL{background: linear-gradient(to right,#ce3636,rgb(83, 83, 83))}
+.W{color: #00C851;}
+.L{color: #ce3636;}
+.AN{color: gray;}
+.HW{color: rgb(106, 153, 125);}
+.HL{color: #c77e7e;}
  /* ODDS GROUPED */
  .table-odds-group td b {float:right}
 
