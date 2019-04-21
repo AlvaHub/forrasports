@@ -1,16 +1,26 @@
 import React, { Component } from 'react';
 import * as common from './Common';
-import { formatDate } from 'react-day-picker/moment';
 import MyModal from './MyModal';
 import CurrencyFormat from 'react-currency-format';
+import DayPickerInput from 'react-day-picker/DayPickerInput';
+import 'react-day-picker/lib/style.css';
+import MomentLocaleUtils, { formatDate, parseDate } from 'react-day-picker/moment';
+import 'moment/locale/pt-br';
 
 class OddHistory extends Component {
   constructor(props) {
     super(props);
 
     this.barList();
-    this.bindList();
 
+
+  }
+  componentDidMount() {
+    this.bindList();
+    //DATES
+    common.getData('data/oddhistory.php?data=dates').then((dates) => {
+      this.setState({ dates });
+    });
   }
   state = {
     items: [],
@@ -20,14 +30,16 @@ class OddHistory extends Component {
     filter: {
       user_id: common.getUser().id,
       result: null,
-      show_bet_user: common.getUser().id === 1
+      show_bet_user: false,
+      date: "0"
     },
     stats: {
       odd_W: [], odd_L: [], odd_AN: [], odd_HW: [], odd_HL: []
     },
     bets_valid_count: 0,
     proportion: 1,
-    bet_return: 0
+    bet_return: 0,
+    dates: []
   }
   barList() {
     this.props.changeTitle({
@@ -59,7 +71,7 @@ class OddHistory extends Component {
   bindList() {
     this.props.show();
     var that = this;
-    common.getData('data/oddhistory.php?data=odd_history').then((data) => {
+    common.getData('data/oddhistory.php?data=odd_history&date=' + this.state.filter.date).then((data) => {
       var bets_valid_count = 0;
       that.props.hide();
       let stats = this.state.stats;
@@ -92,7 +104,7 @@ class OddHistory extends Component {
       this.setState({ itemsAll: data, bets_valid_count });
       this.processFilter();
     });
-    common.getData('data/oddhistory.php?data=group_by_odd').then((itemsByOdd) => {
+    common.getData('data/oddhistory.php?data=group_by_odd&date=' + this.state.filter.date).then((itemsByOdd) => {
       this.setState({ itemsByOdd });
     });
   }
@@ -214,6 +226,12 @@ class OddHistory extends Component {
     }
     return false;
   }
+  //FILTER DATE
+  filterDate = (e) => {
+    let filter = this.state.filter;
+    filter.date = e.target.value;
+    setTimeout(() => { this.bindList(); }, 1);
+  }
   //FILTER RESULT
   filterResult = (result, e) => {
 
@@ -276,54 +294,60 @@ class OddHistory extends Component {
 
     return (
       <React.Fragment>
-        <MyModal handleShow={this.state.showModal} handleClose={() => { this.setState({ showModal: false }) }} title="Odds Table" >
+        <MyModal handleShow={this.state.showModal} handleClose={() => { this.setState({ showModal: false }) }} title="Análises" >
           <div className="row p-1" >
-            <table className="table table-dark table-hover table-bordered table-striped table-sm table-odds-group" >
-              <thead>
-                <tr>
-                  <th>Odd</th>
-                  <th>Qtd</th>
-                  <th className="result-W text-center">W</th>
-                  <th className="result-L text-center">L</th>
-                  <th className="result-AN text-center">AN</th>
-                  <th className="result-HW text-center">HW</th>
-                  <th className="result-HL text-center">HL</th>
-                </tr>
-              </thead>
-              <tbody>
-                {this.state.itemsByOdd.map((x, i) => <tr key={i} >
-                  <td>{x.odd}</td>
-                  <td>{x.qtd}</td>
-                  <td>{x.W} <b>{((x.W / x.qtd) * 100).toFixed(0)}%</b></td>
-                  <td>{x.L} <b>{((x.L / x.qtd) * 100).toFixed(0)}%</b></td>
-                  <td>{x.AN} <b>{((x.AN / x.qtd) * 100).toFixed(0)}%</b></td>
-                  <td>{x.HW} <b>{((x.HW / x.qtd) * 100).toFixed(0)}%</b></td>
-                  <td>{x.HL} <b>{((x.HL / x.qtd) * 100).toFixed(0)}%</b></td>
-                </tr>)}
-              </tbody>
-            </table>
+            <div className="mb-3 col-12">
+              <div className="font-weight-bold mb-1">Cotação Média x Resultado</div>
+              <div className="result-label result-W" onClick={this.showOddsTable} >{this.state.stats.odd_W.average()} </div>
+              <div className="result-label result-L" onClick={this.showOddsTable}>{this.state.stats.odd_L.average()} </div>
+              <div className="result-label result-AN" onClick={this.showOddsTable}>{this.state.stats.odd_AN.average()} </div>
+              <div className="result-label result-HW" onClick={this.showOddsTable}>{this.state.stats.odd_HW.average()} </div>
+              <div className="result-label result-HL" onClick={this.showOddsTable}>{this.state.stats.odd_HL.average()} </div>
+            </div>
+            <div className="col-12">
+              <div className="font-weight-bold mb-1">Cotação x Resultado</div>
+              <table className="table table-dark table-hover table-bordered table-striped table-sm table-odds-group" >
+                <thead>
+                  <tr>
+                    <th>Odd</th>
+                    <th>Qtd</th>
+                    <th className="result-W text-center">W</th>
+                    <th className="result-L text-center">L</th>
+                    <th className="result-AN text-center">AN</th>
+                    <th className="result-HW text-center">HW</th>
+                    <th className="result-HL text-center">HL</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {this.state.itemsByOdd.map((x, i) => <tr key={i} >
+                    <td>{x.odd}</td>
+                    <td>{x.qtd}</td>
+                    <td>{x.W} <b className="text-warning">{((x.W / x.qtd) * 100).toFixed(0)}%</b></td>
+                    <td>{x.L} <b className="text-warning">{((x.L / x.qtd) * 100).toFixed(0)}%</b></td>
+                    <td>{x.AN} <b className="text-warning">{((x.AN / x.qtd) * 100).toFixed(0)}%</b></td>
+                    <td>{x.HW} <b className="text-warning">{((x.HW / x.qtd) * 100).toFixed(0)}%</b></td>
+                    <td>{x.HL} <b className="text-warning">{((x.HL / x.qtd) * 100).toFixed(0)}%</b></td>
+                  </tr>)}
+                </tbody>
+              </table>
+            </div>
           </div>
         </MyModal>
         <div className="filter hidden-md" id="filter" >
           <div className="row no-gutters">
             <div className="col-md-2 p-sm-1">
-              <input type="text" name="showStatsAll" className="form-control form-control-sm" placeholder="Buscar..." onChange={this.filter.bind(this)} />
+              <select name="dates" value={this.state.filter.date} className="form-control form-control-sm" onChange={this.filterDate.bind(this)} >
+                {this.state.dates.map(x => <option key={x.date_start} value={x.date_start} >{formatDate(x.date_start, 'YY/MM/DD dd')} ({x.count})</option>)}
+              </select>
             </div>
-            <div className="col-md-2 p-sm-1 no-overflow no-break">
+            <div className="col-md-3 p-sm-1 no-overflow no-break align-self-center">
               <b>Qtd: </b>
               <div className="result-label result-W" onClick={this.filterResult.bind(this, "W")}>{this.state.items.filter(x => x.result === "W").length} </div>
               <div className="result-label result-L" onClick={this.filterResult.bind(this, "L")}>{this.state.items.filter(x => x.result === "L").length} </div>
               <div className="result-label result-AN" onClick={this.filterResult.bind(this, "AN")}>{this.state.items.filter(x => x.result === "AN").length} </div>
               <div className="result-label result-HW" onClick={this.filterResult.bind(this, "HW")}>{this.state.items.filter(x => x.result === "HW").length} </div>
               <div className="result-label result-HL" onClick={this.filterResult.bind(this, "HL")}>{this.state.items.filter(x => x.result === "HL").length} </div>
-            </div>
-            <div className="col-md-3 p-sm-1 no-overflow no-break">
-              <b>Odd AVG: </b>
-              <div className="result-label result-W" onClick={this.showOddsTable} >{this.state.stats.odd_W.average()} </div>
-              <div className="result-label result-L" onClick={this.showOddsTable}>{this.state.stats.odd_L.average()} </div>
-              <div className="result-label result-AN" onClick={this.showOddsTable}>{this.state.stats.odd_AN.average()} </div>
-              <div className="result-label result-HW" onClick={this.showOddsTable}>{this.state.stats.odd_HW.average()} </div>
-              <div className="result-label result-HL" onClick={this.showOddsTable}>{this.state.stats.odd_HL.average()} </div>
+              <div className="block-inline position-relative" style={{ top: 5 }}><i className="fas fa-chart-bar ml-2 pointer" onClick={this.showOddsTable} style={{ fontSize: 22 }}  ></i></div>
             </div>
             <div className="col-md-1 p-sm-1 no-overflow no-break align-self-center">
               <select className="form-control form-control-sm" name="user_id" value={this.state.filter.user_id} onChange={this.showBetUserSpecific.bind(this)} >
