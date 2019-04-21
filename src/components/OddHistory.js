@@ -20,7 +20,7 @@ class OddHistory extends Component {
     filter: {
       user_id: common.getUser().id,
       result: null,
-      show_bet_user : true
+      show_bet_user: common.getUser().id === 1
     },
     stats: {
       odd_W: [], odd_L: [], odd_AN: [], odd_HW: [], odd_HL: []
@@ -33,7 +33,7 @@ class OddHistory extends Component {
     this.props.changeTitle({
       left: null, center: <div className="pointer" onClick={this.bindList.bind(this)}>Histórico</div>,
       right: <div>
-        <button className="btn btn-secondary btn-sm mr-3" onClick={this.getResults.bind(this)} >Atualizar</button>
+        <button className="btn btn-secondary btn-sm mr-3 btn-loading" onClick={this.getResults.bind(this)} >Atualizar</button>
         <i className="fas fa-user mr-3 font-md pointer show-md" onClick={this.showBetUser.bind(this)} ></i>
         <i className="fas fa-filter text-dark font-md show-md" onClick={this.showFilter.bind(this)}></i>
       </div>
@@ -46,9 +46,14 @@ class OddHistory extends Component {
     this.props.show();
     var that = this;
     common.getData('match_result.php').then((data) => {
-      that.props.hide();
-      if (data !== "1")
+
+      if (data !== "1") {
         return alert("Não foi possível atualizar os resultados!");
+        that.props.hide();
+      }
+      else {
+        this.bindList();
+      }
     });
   }
   bindList() {
@@ -84,7 +89,7 @@ class OddHistory extends Component {
         if (x.result && x.result !== "")
           bets_valid_count++;
       });
-      this.setState({ itemsAll: data, bets_valid_count});
+      this.setState({ itemsAll: data, bets_valid_count });
       this.processFilter();
     });
     common.getData('data/oddhistory.php?data=group_by_odd').then((itemsByOdd) => {
@@ -211,7 +216,7 @@ class OddHistory extends Component {
   }
   //FILTER RESULT
   filterResult = (result, e) => {
-  
+
     let items = this.state.itemsAll;
     let filter = this.state.filter;
     if (filter.last_result !== result)
@@ -222,7 +227,7 @@ class OddHistory extends Component {
     filter.last_result = filter.last_result === result ? "" : result;
     this.setState({ filter });
     this.processFilter();
- 
+
   }
   //FILTER USER
   showBetUser = () => {
@@ -239,19 +244,19 @@ class OddHistory extends Component {
     this.setState({ filter });
     this.processFilter();
   }
-   //PROCESS FILTER
-   processFilter = () => {
-  
-    setTimeout(() => { 
+  //PROCESS FILTER
+  processFilter = () => {
+
+    setTimeout(() => {
       let filter = this.state.filter;
       let items = this.state.itemsAll;
       items = items.filter(x => (filter.result ? (x.result === filter.result) : true) &&
-      (!filter.show_bet_user ? true :  filter.user_id === "0" ? x.user_id != null :  (x.user_id + "").indexOf(filter.user_id) > -1));
-      
+        (!filter.show_bet_user ? true : filter.user_id === "0" ? x.user_id != null : (x.user_id + "").indexOf(filter.user_id) > -1));
+
       let bet_return = this.getBetReturn(items, this.state.proportion);
       this.setState({ items, bet_return });
     }, 1);
-   }
+  }
   setProportion = (e) => {
     if (e.target.value > 0) {
       let bet_return = this.getBetReturn(this.state.items, Number(e.target.value));
@@ -361,7 +366,7 @@ class OddHistory extends Component {
                   <td>{i + 1}
                     {x.user_id && x.user_id.split(',').map((y, i) =>
                       y === "1" ? <i key={i} className={'fas fa-user-graduate ml-1 float-right ' + x.result}></i> :
-                        <i  key={i} className={'fas fa-user ml-1 float-right ' + x.result}></i>
+                        <i key={i} className={'fas fa-user ml-1 float-right ' + x.result}></i>
                     )}
                   </td>
                   <td>{formatDate(x.start, "DD/MM/YYYY HH:mm")}</td>

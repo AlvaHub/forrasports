@@ -91,7 +91,8 @@ class Odds extends Component {
   }
   bindList() {
     this.props.show();
-    common.getData('data/odds.php?date=' + this.state.filter_date).then((items) => {
+    let userId = common.getUser().id;
+    common.getData('data/odds.php?date=' + this.state.filter_date + '&user_id=' + userId).then((items) => {
       this.setState({ itemsAll: items });
       setTimeout(() => { this.filterImportant() }, 1);
     })
@@ -260,8 +261,13 @@ class Odds extends Component {
   betAdd = (x, index, e) => {
     let bets = this.state.bets;
     x.user_id = common.getUser().id;
-    if (bets.find(y => y.id_365 === x.id_365 && y.odd_name === x.odd_name) != null)
-      return alert('Aposta já adicionada!');
+    if (bets.find(y => y.id_365 === x.id_365 && y.odd_name === x.odd_name) != null){
+      if(window.confirm('Aposta já adicionada. Deseja remover?')){
+        this.betRemove(x,e);
+      }
+      return;
+    }
+      
 
     //Blink Effect
     var row = document.getElementById('row_' + index);
@@ -270,6 +276,7 @@ class Odds extends Component {
     common.postData("data/betuser.php?data=insert", x).then((data) => {
       if (data === "1") {
         bets.push(x);
+
         this.setState({ bets });
         //Blink Effect
         row.className = row.className + " add-blink";
@@ -285,6 +292,7 @@ class Odds extends Component {
       if (data === "1") {
         let index = bets.indexOf(x);
         bets.splice(index, 1);
+        x.user_id = null;
         this.setState({ bets });
       }
     });
@@ -480,8 +488,11 @@ class Odds extends Component {
               </thead>
               <tbody>
                 {this.state.items.map((x, i) => <tr key={i} id={'row_' + i} >
-                  <td onClick={this.betAdd.bind(this, x, i)} id="" >{i + 1}</td>
-                  <td>{formatDate(x.start, "DD/MM/YYYY HH:mm")}</td>
+                  <td onClick={this.betAdd.bind(this, x, i)} id="" >{i + 1}
+                  <i hidden={x.user_id !== '1'} className={'fas fa-user-graduate ml-1 float-right'}></i>
+                  <i hidden={x.user_id !== '2'} className={'fas fa-user ml-1 float-right'}></i>
+                  </td>
+                  <td>{formatDate(x.start, "DD/MM/YYYY HH:mm")} <small className={'float-right'}>{x.updated_at}</small></td>
                   <td>{x.league_name}</td>
                   <td>{x.event_name}</td>
                   <td>{x.odd_name}</td>
