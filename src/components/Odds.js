@@ -260,7 +260,7 @@ class Odds extends Component {
   }
   betAdd = (x, index, e) => {
     let bets = this.state.bets;
-    x.user_id = common.getUser().id;
+    x.user_id = common.getUser().id.toString();
     if (bets.find(y => y.id_365 === x.id_365 && y.odd_name === x.odd_name) != null){
       if(window.confirm('Aposta já adicionada. Deseja remover?')){
         this.betRemove(x,e);
@@ -477,6 +477,7 @@ class Odds extends Component {
                 <tr>
                   <th></th>
                   <th onClick={common.tableSort.bind(this, 'start')} >Data</th>
+                  <th onClick={common.tableSort.bind(this, 'updated_at')} >Min</th>
                   <th onClick={common.tableSort.bind(this, 'league_name')} >Liga</th>
                   <th onClick={common.tableSort.bind(this, 'event_name')} >Evento</th>
                   <th onClick={common.tableSort.bind(this, 'odd_name')} >Mercado</th>
@@ -492,7 +493,8 @@ class Odds extends Component {
                   <i hidden={x.user_id !== '1'} className={'fas fa-user-graduate ml-1 float-right'}></i>
                   <i hidden={x.user_id !== '2'} className={'fas fa-user ml-1 float-right'}></i>
                   </td>
-                  <td>{formatDate(x.start, "DD/MM/YYYY HH:mm")} <small className={'float-right'}>{x.updated_at}</small></td>
+                  <td>{formatDate(x.start, "DD/MM HH:mm")}</td>
+                  <td><small>{x.updated_at}{x.updated_at_pin && '/' + x.updated_at_pin}</small></td>
                   <td>{x.league_name}</td>
                   <td>{x.event_name}</td>
                   <td>{x.odd_name}</td>
