@@ -497,7 +497,7 @@ class Odds extends Component {
                   <td><small>{x.updated_at}{x.updated_at_pin && '/' + x.updated_at_pin}</small></td>
                   <td>{x.league_name}</td>
                   <td>{x.event_name}</td>
-                  <td>{x.odd_name}</td>
+                  <td className={x.diff_line === '0' ? "" : "text-warning font-weight-bold"}>{x.odd_name}</td>
                   <td>{common.odd365(x.odd_365)}</td>
                   <td>{x.odd_pin}</td>
                   <td className={this.formatP365(x.pin365)}>{x.pin365} </td>
