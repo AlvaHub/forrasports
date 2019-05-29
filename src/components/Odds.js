@@ -81,32 +81,33 @@ class Odds extends Component {
       }
 
     });
-    //GET BET USER
-    common.getData("data/betuser.php?data=by_user&user_id=" + common.getUser().id).then((bets) => {
-      if (bets.length > 0) {
-        this.setState({ bets });
-      }
 
-    });
   }
   bindList() {
     this.props.show();
     let userId = common.getUser().id;
     common.getData('data/odds.php?date=' + this.state.filter_date + '&user_id=' + userId).then((items) => {
-      this.setState({ itemsAll: items });
+      let bets = items.filter(x => x.user_id !== null);
+      this.setState({ itemsAll: items.filter(x => x.user_id === null), bets });
       setTimeout(() => { this.filterImportant() }, 1);
-    })
+    });
     common.getData('data/dataloading.php?data=data_loading').then((data_loading) => {
       this.barList(false, data_loading);
       this.setState({ data_loading })
-    })
+    });
     common.getData('data/odds.php?data=dates').then(
       (dates) => {
 
         dates.push(...this.state.datesPlus);
         this.setState({ dates })
       }
-    )
+    );
+    //GET BETS SELECTED BY USER
+    // common.getData("data/betuser.php?data=by_user&user_id=" + common.getUser().id).then((bets) => {
+    //   if (bets.length > 0) {
+    //     this.setState({ bets });
+    //   }
+    // });
   }
   componentDidUpdate() {
 
@@ -131,7 +132,8 @@ class Odds extends Component {
     filter_date: "0",
     dates: [{ id: '0', name: 'Carregando...' }],
     datesPlus: [{ id: 'green', name: '< 0.85' }, { id: 'yellow', name: '< 0.90' }, { id: 'red', name: '< 0.93' },],
-    minutes: []
+    minutes: [],
+    view_bets: null
   }
   handleChange = e => {
     let data = this.state.data;
@@ -254,6 +256,30 @@ class Odds extends Component {
     return css;
 
   }
+  formatEV(value) {
+    var css = "";
+    if (value >= 5)
+      css = "bg-green text-white";
+    else if (value >= 3.5)
+      css = "bg-yellow text-white";
+    else if (value >= 2)
+      css = "bg-red text-white";
+
+    return css;
+
+  }
+  formatP365Light(value) {
+    var css = "";
+    if (value < 0.85)
+      css = "bg-success pl-1 rounded text-white";
+    else if (value < 0.9)
+      css = "bg-yellow pl-1 rounded text-white";
+    else if (value < 0.93)
+      css = "bg-red pl-1 rounded text-white";
+
+    return css;
+
+  }
   filterDate = (e) => {
     this.setState({ [e.target.name]: e.target.value });
     setTimeout(() => { this.bindList(); }, 1);
@@ -261,13 +287,13 @@ class Odds extends Component {
   betAdd = (x, index, e) => {
     let bets = this.state.bets;
     x.user_id = common.getUser().id.toString();
-    if (bets.find(y => y.id_365 === x.id_365 && y.odd_name === x.odd_name) != null){
-      if(window.confirm('Aposta já adicionada. Deseja remover?')){
-        this.betRemove(x,e);
+    if (bets.find(y => y.id_365 === x.id_365 && y.odd_name === x.odd_name) != null) {
+      if (window.confirm('Aposta já adicionada. Deseja remover?')) {
+        this.betRemove(x, e);
       }
       return;
     }
-      
+
 
     //Blink Effect
     var row = document.getElementById('row_' + index);
@@ -275,9 +301,16 @@ class Odds extends Component {
 
     common.postData("data/betuser.php?data=insert", x).then((data) => {
       if (data === "1") {
-        bets.push(x);
+        x.user_odd_365 = x.odd_365;
+        x.user_odd_pin = x.odd_pin;
+        x.user_pin365 = x.pin365;
+        x.user_percent = x.percent;
 
-        this.setState({ bets });
+        bets.push(x);
+        let items = this.state.items;
+        items.splice(index, 1);
+
+        this.setState({ items, bets });
         //Blink Effect
         row.className = row.className + " add-blink";
       }
@@ -285,15 +318,21 @@ class Odds extends Component {
   }
   betRemove = (x, e) => {
 
+    if (!window.confirm("Deseja cancelar esta aposta?"))
+      return;
+
     let bets = this.state.bets;
     x.user_id = common.getUser().id;
 
     common.postData("data/betuser.php?data=delete", x).then((data) => {
+
       if (data === "1") {
         let index = bets.indexOf(x);
         bets.splice(index, 1);
+        let items = this.state.items;
+        items.push(x);
         x.user_id = null;
-        this.setState({ bets });
+        this.setState({ items, bets });
       }
     });
   }
@@ -305,21 +344,21 @@ class Odds extends Component {
     this.barList(true);
 
     common.getData('start.php').then((data) => {
-      console.log(data);
+
     }, (err) => { clearInterval(intervalLoading); this.barList(false, this.state.data_loading); console.log(err) })
 
     var intervalLoading = null;
     setTimeout(() => {
       intervalLoading = setInterval(() => {
-
+        //Fill Loading Bar Percent
         common.getData('data/dataloading.php?data=data_loading_percent').then((info) => {
           console.log(info);
-          if (info.status_id === "SU") {
+          if (info.status_id === "SU") { //Success means data loading finished
             clearInterval(intervalLoading);
 
             this.barList(false, this.state.data_loading);
             this.bindList();
-            if (this.state.data_loading_interval !== "0") {
+            if (this.state.data_loading_interval !== "0") { // Means that loading is scheduled, so prepare to run the next one
               document.getElementById("btn_loading").setAttribute("disabled", "disabled");
               this.timeoutLoading = setTimeout(() => { this.loadData() }, Number(this.state.data_loading_interval) * 60 * 1000);
             }
@@ -448,11 +487,26 @@ class Odds extends Component {
               </select>
             </div>
             <div className="col-12 col-sm-2 align-self-center no-overflow no-break p-sm-1">
-              <select className="form-control form-control-sm" name="filter_bet365Greater" onChange={this.filter.bind(this)} value={this.state.filter_bet365Greater}>
+              {/* <select className="form-control form-control-sm" name="filter_bet365Greater" onChange={this.filter.bind(this)} value={this.state.filter_bet365Greater}>
                 <option value="0">Mais Filtro</option>
                 <option value="lower">Bet365 Menor</option>
                 <option value="greater">Bet365 Maior</option>
-              </select>
+              </select> */}
+              <b>A:
+                <span className="bg-secondary p-1 text-white ml-1">{this.state.bets.filter(x => x.odd_365 === x.user_odd_365).length}</span>
+                <span className="bg-success p-1 text-white ">{this.state.bets.filter(x => x.odd_365 < x.user_odd_365).length}</span>
+                <span className="bg-danger p-1 text-white ">{this.state.bets.filter(x => x.odd_365 > x.user_odd_365).length}</span>
+              </b>
+              <b className="ml-2">B:
+                <span className="bg-secondary p-1 text-white ml-1">{this.state.bets.filter(x => x.odd_pin === x.user_odd_pin).length}</span>
+                <span className="bg-success p-1 text-white ">{this.state.bets.filter(x => x.odd_pin < x.user_odd_pin).length}</span>
+                <span className="bg-danger p-1 text-white ">{this.state.bets.filter(x => x.odd_pin > x.user_odd_pin).length}</span>
+              </b>
+              <b className="ml-2">P:
+                <span className="bg-secondary p-1 text-white ml-1">{this.state.bets.filter(x => x.pin365 === x.user_pin365).length}</span>
+                <span className="bg-success p-1 text-white ">{this.state.bets.filter(x => x.pin365 < x.user_pin365).length}</span>
+                <span className="bg-danger p-1 text-white ">{this.state.bets.filter(x => x.pin365 > x.user_pin365).length}</span>
+              </b>
             </div>
             <div className="col-12 col-sm-5 align-self-center text-right pr-4 no-overflow no-break p-sm-1">
               <button type="button" name="viewBets" className={'ml-2  mr-1 btn btn-sm ' + (this.state.view_bets ? 'btn-secondary' : 'btn-outline-secondary')} onClick={() => { this.setState({ view_bets: !this.state.view_bets }) }}>Seleções</button>
@@ -490,14 +544,14 @@ class Odds extends Component {
               <tbody>
                 {this.state.items.map((x, i) => <tr key={i} id={'row_' + i} >
                   <td onClick={this.betAdd.bind(this, x, i)} id="" >{i + 1}
-                  <i hidden={x.user_id !== '1'} className={'fas fa-user-graduate ml-1 float-right'}></i>
-                  <i hidden={x.user_id !== '2'} className={'fas fa-user ml-1 float-right'}></i>
+                    <i hidden={x.user_id !== '1'} className={'fas fa-user-graduate ml-1 float-right'}></i>
+                    <i hidden={x.user_id !== '2'} className={'fas fa-user ml-1 float-right'}></i>
                   </td>
                   <td>{formatDate(x.start, "DD/MM HH:mm")}</td>
-                  <td><small>{x.updated_at}{x.updated_at_pin && '/' + x.updated_at_pin}</small></td>
+                  <td><small><span className={x.updated_at > 30 ? 'text-warning font-weight-bold' : ''}>{x.updated_at}</span>/<span className={x.updated_at_pin > 30 ? 'text-warning font-weight-bold' : ''}>{x.updated_at_pin}</span></small></td>
                   <td>{x.league_name}</td>
                   <td>{x.event_name}</td>
-                  <td className={x.diff_line === '0' ? "" : "text-warning font-weight-bold"}>{x.odd_name}</td>
+                  <td className={x.diff_line === 0 ? "" : "text-warning font-weight-bold"}>{x.odd_name}</td>
                   <td>{common.odd365(x.odd_365)}</td>
                   <td>{x.odd_pin}</td>
                   <td className={this.formatP365(x.pin365)}>{x.pin365} </td>
@@ -505,44 +559,47 @@ class Odds extends Component {
                 </tr>)}
               </tbody>
             </table>
-            <div className="div-table-bets" hidden={!this.state.view_bets}>
+            <div className={'div-table-bets ' + (this.state.view_bets === null ? '' : (this.state.view_bets ? 'show' : 'hide'))} >
               <div className="table-responsive" >
                 <table id="table-bets" className="table  table-bordered table-sm table-scroll table-bets w-100" >
                   <thead  >
                     <tr>
                       <th></th>
                       <th>Data</th>
+                      <th>Min</th>
                       <th>Liga</th>
                       <th>Evento</th>
                       <th>Mercado</th>
                       <th>A</th>
-                      <th >B</th>
-                      <th>B/A</th>
+                      <th>B</th>
+                      <th>B / A</th>
                       <th>% EV</th>
                     </tr>
                   </thead>
                   <tbody>
                     {this.state.bets.map((x, i) => <tr key={i}>
                       <td onClick={this.betRemove.bind(this, x)} >{i + 1}</td>
-                      <td>{formatDate(x.start, "DD/MM/YYYY - HH:mm")}hs
-                  <div>{x.atualizacao}</div>
+                      <td>{formatDate(x.start, "DD/MM HH:mm")}
+                        <div>{x.atualizacao}</div>
                       </td>
+                      <td><small>{x.updated_at}/{x.updated_at_pin}</small></td>
                       <td>{x.league_name}</td>
                       <td>{x.event_name}</td>
                       <td>{x.odd_name}</td>
-                      <td>
-                        {x.odd_365}
-                        <div>{x.odd_365_new}</div>
+                      <td className={(x.user_odd_365 === x.odd_365 ? '' : (x.user_odd_365 > x.odd_365 ? 'text-white bg-success ' : 'text-white bg-red'))} >
+                      {common.odd365(x.user_odd_365)}
+                        <div>{common.odd365(x.odd_365)}</div>
                       </td>
-                      <td>{x.odd_pin}
-                        <div>{x.odd_pin_new}</div>
+                      <td className={(x.user_odd_pin === x.odd_pin ? '' : (x.user_odd_pin > x.odd_pin ? 'text-white bg-success ' : 'text-white bg-red'))} >
+                        {x.odd_pin}
+                        <div>{x.user_odd_pin}</div>
                       </td>
-                      <td>
-                        {x.pin365}
+                      <td className={(x.user_pin365 === x.pin365 ? '' : (x.user_pin365 > x.pin365 ? 'text-white bg-success ' : 'text-white bg-red'))} >
+                        <div>{x.pin365}</div>
+                        <div>{x.user_pin365}</div>
                       </td>
-                      <td>
-                        {x.percent}
-                        <div>{x.percent_new}</div>
+                      <td>{x.percent}
+                        <div>{x.user_percent}</div>
                       </td>
                     </tr>)}
                   </tbody>

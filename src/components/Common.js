@@ -77,8 +77,12 @@ export function setUser(user) {
     localStorage.setItem("user_forrasports", JSON.stringify(user))
 }
 export function getUser() {
-    var user = localStorage.getItem("user_forrasports");
-    return user ? JSON.parse(user) : null;
+    let userJson = localStorage.getItem("user_forrasports");
+    if (!userJson)
+        return null;
+
+    let user = JSON.parse(userJson);
+    return user;
 }
 Date.prototype.addDays = function (days) {
     var date = new Date(this.valueOf());
@@ -135,7 +139,7 @@ Array.prototype.average = function () {
     for (var i = 0, _len = this.length; i < _len; i++) {
         total += isNaN(this[i]) ? 0 : Number(this[i]);
     }
-    return total === 0 ? 0 :  (total / this.length).toFixed(2);
+    return total === 0 ? 0 : (total / this.length).toFixed(2);
 }
 Array.prototype.sumString = function (prop, color) {
     var total = 0;
@@ -187,7 +191,7 @@ export function isNumberKey(e) {
     var charCode = (e.which) ? e.which : e.keyCode
     var value = e.target.value;
     var dotcontains = value.indexOf(".") != -1;
-   
+
     if (dotcontains)
         if (charCode == 46) return false;
     if (charCode == 46) return true;
@@ -195,7 +199,7 @@ export function isNumberKey(e) {
         return false;
     return true;
 }
-export function odd365(num){
-    return  num[num.length - 1] === "0" ? Number(num).toFixed(2) :  Number(num);
+export function odd365(num) {
+    return num[num.length - 1] === "0" ? Number(num).toFixed(2) : Number(num);
 }
 export { scrollTop, scrollLast, getData, postData } 
