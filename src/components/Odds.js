@@ -87,6 +87,7 @@ class Odds extends Component {
     this.props.show();
     let userId = common.getUser().id;
     common.getData('data/odds.php?date=' + this.state.filter_date + '&user_id=' + userId).then((items) => {
+      console.log(items);
       let bets = items.filter(x => x.user_id !== null);
       this.setState({ itemsAll: items.filter(x => x.user_id === null), bets });
       setTimeout(() => { this.filterImportant() }, 1);
@@ -551,7 +552,7 @@ class Odds extends Component {
                   <td><small><span className={x.updated_at > 30 ? 'text-warning font-weight-bold' : ''}>{x.updated_at}</span>/<span className={x.updated_at_pin > 30 ? 'text-warning font-weight-bold' : ''}>{x.updated_at_pin}</span></small></td>
                   <td>{x.league_name}</td>
                   <td>{x.event_name}</td>
-                  <td className={x.diff_line === 0 ? "" : "text-warning font-weight-bold"}>{x.odd_name}</td>
+                  <td className={Number(x.diff_line) === 0 ? "" : "text-warning font-weight-bold"}>{x.odd_name}</td>
                   <td>{common.odd365(x.odd_365)}</td>
                   <td>{x.odd_pin}</td>
                   <td className={this.formatP365(x.pin365)}>{x.pin365} </td>
@@ -586,15 +587,15 @@ class Odds extends Component {
                       <td>{x.league_name}</td>
                       <td>{x.event_name}</td>
                       <td>{x.odd_name}</td>
-                      <td className={(x.user_odd_365 === x.odd_365 ? '' : (x.user_odd_365 > x.odd_365 ? 'text-white bg-success ' : 'text-white bg-red'))} >
-                      {common.odd365(x.user_odd_365)}
-                        <div>{common.odd365(x.odd_365)}</div>
+                      <td className={(Number(x.user_odd_365) === Number(x.odd_365) ? '' : (Number(x.user_odd_365) > Number(x.odd_365) ? 'text-white bg-success ' : 'text-white bg-red'))} >
+                      {common.odd365(x.odd_365)}
+                        <div>{common.odd365(x.user_odd_365)}</div>
                       </td>
-                      <td className={(x.user_odd_pin === x.odd_pin ? '' : (x.user_odd_pin > x.odd_pin ? 'text-white bg-success ' : 'text-white bg-red'))} >
+                      <td className={(Number(x.user_odd_pin) === Number(x.odd_pin) ? '' : (Number(x.user_odd_pin) > Number(x.odd_pin) ? 'text-white bg-success ' : 'text-white bg-red'))} >
                         {x.odd_pin}
                         <div>{x.user_odd_pin}</div>
                       </td>
-                      <td className={(x.user_pin365 === x.pin365 ? '' : (x.user_pin365 > x.pin365 ? 'text-white bg-success ' : 'text-white bg-red'))} >
+                      <td className={(Number(x.user_pin365) === Number(x.pin365) ? '' : (Number(x.user_pin365) > Number(x.pin365) ? 'text-white bg-success ' : 'text-white bg-red'))} >
                         <div>{x.pin365}</div>
                         <div>{x.user_pin365}</div>
                       </td>

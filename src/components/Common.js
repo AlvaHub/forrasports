@@ -200,6 +200,7 @@ export function isNumberKey(e) {
     return true;
 }
 export function odd365(num) {
+  
     return num[num.length - 1] === "0" ? Number(num).toFixed(2) : Number(num);
 }
 export { scrollTop, scrollLast, getData, postData } 
