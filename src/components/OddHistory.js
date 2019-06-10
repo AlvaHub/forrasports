@@ -340,8 +340,22 @@ class OddHistory extends Component {
         alert('Houve um erro ao gerar o relatório!');
       }
     });
-
-
+  }
+  exportReportFirstLast = () => {
+    this.props.show();
+    var that = this;
+    common.getData('data/oddhistory.php?data=min365_maxpin').then(function (data) {
+      that.props.hide();
+      if (data === 1) {
+        var link = document.createElement('a');
+        link.download = 'first365_lastPin.csv';
+        link.href = common.api_url + '/upload/first365_lastPin.csv';
+        link.click();
+      }
+      else {
+        alert('Houve um erro ao gerar o relatório!');
+      }
+    });
   }
 
 
@@ -408,7 +422,10 @@ class OddHistory extends Component {
                   <CurrencyFormat type="tel" className="form-control form-control-sm" placeholder="Máx Pin365..." name="report_pin365_max" onChange={this.handleChange.bind(this)} value={this.state.report_pin365_max || ""} ></CurrencyFormat>
                 </div>
                 <div className="col-12 mt-3">
-                  <button className="btn btn-success" onClick={this.exportReport}>Exportar Planilha</button>
+                  <button className="btn btn-secondary" onClick={this.exportReport}>Exportar Planilha</button>
+                </div>
+                <div className="col-12 mt-3">
+                  <button className="btn btn-success" onClick={this.exportReportFirstLast}>Exportar First 365 Last Pin</button>
                 </div>
               </div>
             </div>
