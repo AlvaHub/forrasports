@@ -342,6 +342,13 @@ class OddHistory extends Component {
     });
   }
   exportReportFirstLast = () => {
+
+    if (document.getElementById('report_password').value !== 'paulinho777')
+      return alert('Senha inválida!');
+
+    document.getElementById('report_password').value = '';
+    this.setState({ report_password: false });
+
     this.props.show();
     var that = this;
     common.getData('data/oddhistory.php?data=min365_maxpin').then(function (data) {
@@ -425,7 +432,12 @@ class OddHistory extends Component {
                   <button className="btn btn-secondary" onClick={this.exportReport}>Exportar Planilha</button>
                 </div>
                 <div className="col-12 mt-3">
-                  <button className="btn btn-success" onClick={this.exportReportFirstLast}>Exportar First 365 Last Pin</button>
+                  <button className="btn btn-success" onClick={() => { this.setState({ report_password: true }) }}>Exportar First 365 Last Pin</button>
+                </div>
+                <div className="col-12 mt-3" hidden={!this.state.report_password}>
+                  <b>Digite a Senha:</b><br />
+                  <input type="text" id="report_password" name="report_password" className="form-control col-md-3" text="" ></input>
+                  <button className="btn btn-primary mt-1" onClick={this.exportReportFirstLast}>OK</button>
                 </div>
               </div>
             </div>
