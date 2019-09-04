@@ -6,19 +6,20 @@ import MyModal from './MyModal';
 import CurrencyFormat from 'react-currency-format';
 import 'moment/locale/pt-br';
 
-class Odds extends Component {
+class OddsEspnet extends Component {
   constructor(props) {
     super(props);
 
     props.setChild(this);
+
   }
   barList(isLoading, data_loading_info) {
     this.props.changeTitle({
       left: null,
-      center: <div className="pointer" onClick={this.bindList.bind(this)}  ><div className="hidden-xs">Odds</div>
+      center: <div className="pointer" onClick={this.bindList.bind(this)}  ><div className="hidden-xs">Odds Esportenet</div>
         {data_loading_info && <small className="last-update show-xs"><div><b>Atualização</b></div> {formatDate(data_loading_info.date_finish, "DD/MM/YY HH:mm:ss")} </small>}</div>, right: <div className="" onClick={this.showFilter.bind(this)}><i className="fas fa-filter show-xs"></i></div>
-      , right: <i className="fas fa-filter  ml-2 text-dark font-md show-xs" onClick={this.showFilter.bind(this)}></i>
-
+      , right:
+        <i className="fas fa-filter  ml-2 text-dark font-md show-xs" onClick={this.showFilter.bind(this)}></i>
     });
   }
   barForm = (title) => {
@@ -37,9 +38,6 @@ class Odds extends Component {
   }
   componentWillUnmount() {
     this.props.setChild(null);
-  }
-  componentWillReceiveProps(props) {
-
   }
   componentDidMount() {
 
@@ -75,7 +73,7 @@ class Odds extends Component {
   bindList() {
     this.props.show();
     let userId = common.getUser().id;
-    common.getData('data/odds.php?date=' + this.state.filter_date + '&user_id=' + userId).then((items) => {
+    common.getData('data/odds.php?data=espnet&date=' + this.state.filter_date + '&user_id=' + userId).then((items) => {
       let bets = items.filter(x => x.user_id !== null);
       this.setState({ itemsAll: items.filter(x => x.user_id === null), bets });
       setTimeout(() => { this.filterImportant() }, 1);
@@ -91,15 +89,8 @@ class Odds extends Component {
         this.setState({ dates })
       }
     );
-    //GET BETS SELECTED BY USER
-    // common.getData("data/betuser.php?data=by_user&user_id=" + common.getUser().id).then((bets) => {
-    //   if (bets.length > 0) {
-    //     this.setState({ bets });
-    //   }
-    // });
   }
   componentDidUpdate() {
-
   }
   state = {
     itemsAll: [],
@@ -123,9 +114,6 @@ class Odds extends Component {
     datesPlus: [{ id: 'green', name: '< 0.85' }, { id: 'yellow', name: '< 0.90' }, { id: 'red', name: '< 0.93' },],
     minutes: [],
     view_bets: null
-  }
-  myAlert() {
-    alert('hi');
   }
   handleChange = e => {
     let data = this.state.data;
@@ -196,10 +184,6 @@ class Odds extends Component {
     let filter = this.state.filter;
     filter[e.target.name] = !this.state.filter[e.target.name];
     filter.current = e.target.name;
-    if (e.target.name === "isImportant")
-      filter.isGreen = filter.isYellow = filter.isRed = false;
-    else
-      filter.isImportant = false;
 
     this.setState({ filter });
     setTimeout(() => { this.filterImportant(e) }, 1);
@@ -208,30 +192,27 @@ class Odds extends Component {
     let filter = this.state.filter;
     var items = this.state.itemsAll;
 
-    if (filter.current === "isImportant") {
+    let c = this.state.customFilters.find(x => x.name === "Tela");
+    if (filter.isImportant) {
+      if (this.customHasValue(c.odd_from) || this.customHasValue(c.odd_to) ||
+        this.customHasValue(c.pin365_from) || this.customHasValue(c.pin365_to) ||
+        this.customHasValue(c.ev_from) || this.customHasValue(c.ev_to)) {
+        //Custom Important Filter
+        items = this.state.itemsAll.filter(x =>
+          x.odd_365 >= this.customValueFrom(c.odd_from) && x.odd_365 <= this.customValueTo(c.odd_to) &&
+          x.pin365 >= this.customValueFrom(c.pin365_from) && x.pin365 <= this.customValueTo(c.pin365_to) &&
+          x.percent >= this.customValueFrom(c.ev_from) && x.percent <= this.customValueTo(c.ev_to)
+        );
+      }
+      else //Standart Important Filter
+        items = this.state.itemsAll.filter(x => x.pin365 < 0.93);
 
-      let c = this.state.customFilters.find(x => x.name === "Tela");
-      if (filter.isImportant) {
-        if (this.customHasValue(c.odd_from) || this.customHasValue(c.odd_to) ||
-          this.customHasValue(c.pin365_from) || this.customHasValue(c.pin365_to) ||
-          this.customHasValue(c.ev_from) || this.customHasValue(c.ev_to)) {
-          //Custom Important Filter
-          items = this.state.itemsAll.filter(x =>
-            x.odd_365 >= this.customValueFrom(c.odd_from) && x.odd_365 <= this.customValueTo(c.odd_to) &&
-            x.pin365 >= this.customValueFrom(c.pin365_from) && x.pin365 <= this.customValueTo(c.pin365_to) &&
-            x.percent >= this.customValueFrom(c.ev_from) && x.percent <= this.customValueTo(c.ev_to)
-          );
-        }
-        else //Standart Important Filter
-          items = this.state.itemsAll.filter(x => x.pin365 < 0.93);
+      if (filter.isBothScore) {
+        items = this.state.items.filter(x => x.odd_name.indexOf('Both') > -1);
       }
     }
-    else if (filter.isGreen || filter.isYellow || filter.isRed) {
-      items = this.state.itemsAll.filter(x =>
-        (filter.isGreen ? x.pin365 < 0.85 : false) ||
-        (filter.isYellow ? x.pin365 >= 0.85 && x.pin365 < 0.90 : false) ||
-        (filter.isRed ? x.pin365 >= 0.90 && x.pin365 < 0.93 : false)
-      );
+    else if (filter.isBothScore) {
+      items = this.state.itemsAll.filter(x => x.odd_name.indexOf('Both') > -1);
     }
     this.setState({ items });
     this.props.hide();
@@ -328,7 +309,40 @@ class Odds extends Component {
       }
     });
   }
+  loadData = () => {
 
+    document.getElementById('percent-bar').style.width = "0%";
+    document.getElementById('percent-number').innerHTML = '0%';
+
+    this.barList(true);
+
+    common.getData('start.php').then((data) => {
+
+    }, (err) => { clearInterval(intervalLoading); this.barList(false, this.state.data_loading); console.log(err) })
+
+    var intervalLoading = null;
+    setTimeout(() => {
+      intervalLoading = setInterval(() => {
+        //Fill Loading Bar Percent
+        common.getData('data/dataloading.php?data=data_loading_percent').then((info) => {
+          console.log(info);
+          if (info.status_id === "SU") { //Success means data loading finished
+            clearInterval(intervalLoading);
+
+            this.barList(false, this.state.data_loading);
+            this.bindList();
+            if (this.state.data_loading_interval !== "0") { // Means that loading is scheduled, so prepare to run the next one
+              document.getElementById("btn_loading").setAttribute("disabled", "disabled");
+              this.timeoutLoading = setTimeout(() => { this.loadData() }, Number(this.state.data_loading_interval) * 60 * 1000);
+            }
+          }
+
+          document.getElementById('percent-bar').style.width = info.step_percent + "%";
+          document.getElementById('percent-number').innerHTML = info.step_percent + '%';
+        });
+      }, 5000);
+    }, 3000);
+  }
   customFilterOpen = () => {
     this.setState({ showModal: true, clear_pin: false })
   }
@@ -427,7 +441,7 @@ class Odds extends Component {
             </div>
           </div>
         </MyModal>
-        <div className="filter hidden-xs " id="filter">
+        <div className="filter hidden-xs" id="filter">
           <div className="row no-gutters text-dark" >
             <div className="col-12 col-sm-3 p-sm-1" >
               <input type="text" className="form-control form-control-sm" name="filter_search" value={this.state.filter_search} onChange={this.filter.bind(this)} placeholder="Buscar..." />
@@ -459,12 +473,10 @@ class Odds extends Component {
                 <span className="bg-danger p-1 text-white ">{this.state.bets.filter(x => x.pin365 > x.user_pin365).length}</span>
               </b>
             </div>
-            <div className="col-12 col-sm-5 col-md-auto align-self-center text-right pr-4 no-overflow no-break p-sm-1">
+            <div className="col-12 col-sm-5 col-md-auto  align-self-center text-right pr-4 no-overflow no-break p-sm-1">
               <button type="button" name="viewBets" className={'ml-2  mr-1 btn btn-sm ' + (this.state.view_bets ? 'btn-secondary' : 'btn-outline-secondary')} onClick={() => { this.setState({ view_bets: !this.state.view_bets }) }}>Seleções</button>
               <b>Qtd: </b><span id="selected_qtd" className={'mr-2'}>{this.state.bets.length}</span>
-              <button type="button" name="isGreen" className={'hidden-xs mr-2 btn btn-sm ' + (this.state.filter.isGreen ? 'btn-success' : 'btn-outline-success')} onClick={this.filterImportantClicked.bind(this)}>0.85</button>
-              <button type="button" name="isYellow" className={'hidden-xs mr-2 btn btn-sm ' + (this.state.filter.isYellow ? 'btn-warning' : 'btn-outline-warning')} onClick={this.filterImportantClicked.bind(this)}>0.90</button>
-              <button type="button" name="isRed" className={'hidden-xs mr-2 btn btn-sm ' + (this.state.filter.isRed ? 'btn-danger' : 'btn-outline-danger')} onClick={this.filterImportantClicked.bind(this)}>0.93</button>
+              <button type="button" name="isBothScore" className={'mr-1 btn btn-sm ' + (this.state.filter.isBothScore ? 'btn-info' : 'btn-outline-info')} onClick={this.filterImportantClicked.bind(this)}>Ambas M</button>
               <button type="button" name="isImportant" className={'mr-1 btn btn-sm ' + (this.state.filter.isImportant ? 'btn-secondary' : 'btn-outline-secondary')} onClick={this.filterImportantClicked.bind(this)}>Importantes</button>
               <i className="mr-2 fas fa-wrench" onClick={this.customFilterOpen.bind(this)}></i>
               <b>Registros : {this.state.items.length}</b>
@@ -477,7 +489,7 @@ class Odds extends Component {
         <div className="margin-top-filter" ></div>
         <div id="list">
           <div className="div-odds table-responsive" >
-            <table id="table-odds" className="table table-dark table-hover table-bordered table-striped table-sm  table-scroll table-odds w-100" onClick={this.checkHideFilter} >
+            <table id="table-odds" className="table-espnet table-scroll table-odds w-100" onClick={this.checkHideFilter} >
               <thead  >
                 <tr>
                   <th></th>
@@ -564,4 +576,4 @@ class Odds extends Component {
   }
 }
 
-export default withRouter(Odds);
+export default withRouter(OddsEspnet);

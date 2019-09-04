@@ -310,6 +310,13 @@ input[type='text'],input[type='number'],select,textarea {  font-size: 16px;}
  /* ODDS GROUPED */
  .table-odds-group td b {float:right}
 
+/* TABLE ESPNET */
+.table-espnet {border-collapse: collapse}
+.table-espnet th{padding:0.25rem;color:rgb(221, 221, 221);background-color: rgb(46, 51, 61);}
+.table-espnet td{background-color: rgb(33, 41, 54);padding:0.25rem;color:rgb(221, 221, 221);border:1px solid rgb(36, 46, 59)}
+.table-espnet tr:hover td{background-color: rgb(36, 45, 61);cursor: pointer;}
+.table-espnet tr:nth-child(odd):not(:hover) td{background-color: rgb(23, 30, 39)}
+.table-espnet>tbody::-webkit-scrollbar{background-color: rgb(33, 41, 54)}
 /* BLACK PANEL */
 .panel{cursor:pointer;position: absolute;left:0;top:0;font-size:12pt;color:rgb(170, 170, 170);background-color:rgba(0, 0, 0, 0.8);height:100%;width:100%;z-index:10;display:none;transform: translateY(-100%)}
 .panel i{font-size: 16pt}
@@ -461,7 +468,7 @@ td.top{vertical-align: top}
 .borders ul{border:1px solid green !important} 
 .borders li{border:1px solid yellow !important}
 .label{margin-bottom: 0.1rem;margin-top: 0.4rem;}
-button, button:focus, .btn, .btn:focus{outline:0 !important} 
+button, button:focus, .btn, .btn:focus{outline:0 !important;box-shadow: none} 
 /* FORM */
 .form{display:none;padding:0.4rem;padding-bottom:60px;position: absolute;width:100%;left:0;padding-top:40px;top:0;transform:translateX(200%);
   background-image:var(--day);min-height:var(--window);z-index:11}
