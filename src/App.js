@@ -15,7 +15,9 @@ import { formatDate } from 'react-day-picker/moment';
 import MyModal from './components/MyModal';
 import { BrowserRouter, Route } from 'react-router-dom'
 
+
 class App extends Component {
+
 
   constructor(props) {
     super(props);
@@ -30,7 +32,14 @@ class App extends Component {
     this.handleShow = this.handleShow.bind(this);
     this.handleClose = this.handleClose.bind(this);
 
-    this.myRef = React.createRef();
+    window.addEventListener("beforeunload", function (e) {
+      //Clear User
+      if (!common.getUser())
+        return;
+      let dataInput = { user_id: common.getUser().id };
+      common.postData('data/dataloading.php?data=clear_user', dataInput).then(function () {
+      });
+    });
   }
   state = {
     title: { left: '', center: "Natan Sports", right: '' },
@@ -38,7 +47,7 @@ class App extends Component {
     show: false,
     apple: 1,
     data_loading_interval: '0',
-    minutes: []
+    minutes: [],
   }
   changeTitleHandler = title => {
 
@@ -57,6 +66,13 @@ class App extends Component {
     for (let index = 1; index < 31; index++)
       minutes.push(index);
     this.setState({ minutes });
+
+    //Check if data loading is running and keep the loading bar updating 
+    this.checkLoading();
+
+  }
+  componentWillUnmount() {
+
   }
   dateChanged = (e) => {
     this.setState({ year: e.target.value });
@@ -68,9 +84,44 @@ class App extends Component {
   handleShow() {
     this.setState({ show: true });
   }
+  checkLoading = () => {
+
+    this.globalInterval = setInterval(() => {
+      common.getData('data/dataloading.php?data=data_loading_percent').then((info) => {
+        if (info.status_id === "SU") { //Success means data loading finished
+          if (this.state.isLoading) {
+
+            if (this.childComponent && this.childComponent.bindList)
+              this.childComponent.bindList();
+
+            this.setState({ isLoading: false })
+          }
+        }
+        else {
+          this.setState({ isLoading: true })
+          document.getElementById('percent-bar').style.width = info.step_percent + '%';
+          document.getElementById('percent-number').innerHTML = info.step_percent + '%';
+        }
+      });
+    }, 5000);
+  }
+  loadDataClicked = () => {
+    let that = this;
+    let dataInput = { user_id: common.getUser().id, interval: this.state.data_loading_interval };
+    common.postData('data/dataloading.php?data=set_user', dataInput).then(function (data) {
+
+      if (data.message) {
+        alert(data.message);
+        return;
+      }
+      clearInterval(that.globalInterval);
+      that.loadData();
+
+    });
+  }
   loadData = () => {
 
-    document.getElementById('percent-bar').style.width = "0%";
+    document.getElementById('percent-bar').style.width = '0%';
     document.getElementById('percent-number').innerHTML = '0%';
 
     this.setState({ isLoading: true })
@@ -96,14 +147,11 @@ class App extends Component {
               this.timeoutLoading = setTimeout(() => { this.loadData() }, Number(this.state.data_loading_interval) * 60 * 1000);
             }
           }
-          document.getElementById('percent-bar').style.width = info.step_percent + "%";
+          document.getElementById('percent-bar').style.width = info.step_percent + '%';
           document.getElementById('percent-number').innerHTML = info.step_percent + '%';
         });
       }, 5000);
     }, 3000);
-  }
-  customFilterOpen = () => {
-    this.setState({ showModal: true, clear_pin: false })
   }
   handleChange = e => {
     let data = this.state.data;
@@ -133,11 +181,33 @@ class App extends Component {
         that.setState({ clear_pin: true })
     });
   }
-  customFilterSave = () => {
-    if (this.childComponent && this.childComponent.customFilterOpen)
-      this.childComponent.customFilterOpen();
+  customFilterOpen = () => {
+    let that = this;
+    common.getData('data/dataloading.php?data=check_loading&user_id=' + common.getUser().id).then(function (data) {
+      if (data.message) {
+        alert(data.message);
+        return;
+      }
+      that.setState({ showModal: true, clear_pin: false })
+    });
 
-    this.setState({ showModal: false });
+  }
+  customFilterSave = () => {
+
+    let dataInput = { user_id: common.getUser().id, interval: this.state.data_loading_interval };
+    let that = this;
+    common.postData('data/dataloading.php?data=set_user', dataInput).then(function (data) {
+
+      if (data.message) {
+        that.setState({ showModal: false });
+        alert(data.message);
+        return;
+      }
+      if (data === 1)
+        that.setState({ showModal: false });
+
+    });
+
   }
   clearBindList = () => { this.bindList = null; }
   setChild = (component) => {
@@ -169,8 +239,8 @@ class App extends Component {
             <div className="col-12 row no-gutters">
               <div className="col text-left align-self-center" >{this.state.title.left}</div>
               <div className="col-auto text-center align-self-center" >{this.state.title.center}</div>
-              <div className="col text-right align-self-center" >
-                <div className="block-inline">
+              <div className="col text-right align-self-center">
+                <div className="block-inline" hidden={!common.getUser()}  >
                   <div className="loading-bar" hidden={!this.state.isLoading}>
                     <div className="container">
                       <div className="percent-bar" id="percent-bar"></div>
@@ -181,8 +251,8 @@ class App extends Component {
                     {this.state.data_loading_info &&
                       <div className="block-inline hidden-xs" ><b>Atualização :</b> {formatDate(this.state.data_loading_info.date_finish, "DD/MM/YY HH:mm:ss")} ({this.state.data_loading_info.duration} seg.)</div>
                     }
-                    <i className="mr-1 fas fa-cog text-dark" style={{ fontSize: 16, position : 'relative', top: '3px' }} onClick={this.customFilterOpen.bind(this)}></i>
-                    <button type="button" id="btn_loading" className={'mr-2 btn btn-sm btn-danger btn-loading'} onClick={this.loadData.bind(this)}>Atualizar</button>
+                    <i className="mr-1 fas fa-cog text-dark" style={{ fontSize: 16, position: 'relative', top: '3px' }} onClick={this.customFilterOpen.bind(this)}></i>
+                    <button type="button" id="btn_loading" className={'mr-2 btn btn-sm btn-danger btn-loading'} onClick={this.loadDataClicked.bind(this)}>Atualizar</button>
 
                   </div>
                 </div>

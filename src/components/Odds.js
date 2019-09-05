@@ -459,7 +459,7 @@ class Odds extends Component {
                 <span className="bg-danger p-1 text-white ">{this.state.bets.filter(x => x.pin365 > x.user_pin365).length}</span>
               </b>
             </div>
-            <div className="col-12 col-sm-5 col-md-auto align-self-center text-right pr-4 no-overflow no-break p-sm-1">
+            <div className="col-12 col-sm-5 align-self-center text-right pr-4 no-overflow no-break p-sm-1">
               <button type="button" name="viewBets" className={'ml-2  mr-1 btn btn-sm ' + (this.state.view_bets ? 'btn-secondary' : 'btn-outline-secondary')} onClick={() => { this.setState({ view_bets: !this.state.view_bets }) }}>Seleções</button>
               <b>Qtd: </b><span id="selected_qtd" className={'mr-2'}>{this.state.bets.length}</span>
               <button type="button" name="isGreen" className={'hidden-xs mr-2 btn btn-sm ' + (this.state.filter.isGreen ? 'btn-success' : 'btn-outline-success')} onClick={this.filterImportantClicked.bind(this)}>0.85</button>
