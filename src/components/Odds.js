@@ -10,7 +10,7 @@ class Odds extends Component {
   constructor(props) {
     super(props);
 
-    props.setChild(this);
+   
   }
   barList(isLoading, data_loading_info) {
     this.props.changeTitle({
@@ -42,6 +42,8 @@ class Odds extends Component {
 
   }
   componentDidMount() {
+
+    this.props.setChild(this);
 
     let minutes = [];
     for (let index = 1; index < 31; index++)

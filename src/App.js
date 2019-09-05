@@ -90,15 +90,15 @@ class App extends Component {
       common.getData('data/dataloading.php?data=data_loading_percent').then((info) => {
         if (info.status_id === "SU") { //Success means data loading finished
           if (this.state.isLoading) {
-
+            //console.log(this.childComponent);
             if (this.childComponent && this.childComponent.bindList)
               this.childComponent.bindList();
 
-            this.setState({ isLoading: false })
+            this.setState({ isLoading: false, data_loading_info : info })
           }
         }
         else {
-          this.setState({ isLoading: true })
+          this.setState({ isLoading: true, data_loading_info : info })
           document.getElementById('percent-bar').style.width = info.step_percent + '%';
           document.getElementById('percent-number').innerHTML = info.step_percent + '%';
         }
@@ -126,7 +126,7 @@ class App extends Component {
 
     this.setState({ isLoading: true })
 
-    common.getData('start_test.php').then((data) => {
+    common.getData('start.php').then((data) => {
 
     }, (err) => { clearInterval(intervalLoading); this.setState({ isLoading: false }); console.log(err) })
 
@@ -249,7 +249,7 @@ class App extends Component {
                   </div>
                   <div className="data-loading-info" hidden={this.state.isLoading} >
                     {this.state.data_loading_info &&
-                      <div className="block-inline hidden-xs" ><b>Atualização :</b> {formatDate(this.state.data_loading_info.date_finish, "DD/MM/YY HH:mm:ss")} ({this.state.data_loading_info.duration} seg.)</div>
+                      <div className="block-inline hidden-xs mr-2" >{formatDate(this.state.data_loading_info.date_finish, "DD/MM/YY HH:mm:ss")} ({this.state.data_loading_info.duration} seg.)</div>
                     }
                     <i className="mr-1 fas fa-cog text-dark" style={{ fontSize: 16, position: 'relative', top: '3px' }} onClick={this.customFilterOpen.bind(this)}></i>
                     <button type="button" id="btn_loading" className={'mr-2 btn btn-sm btn-danger btn-loading'} onClick={this.loadDataClicked.bind(this)}>Atualizar</button>
