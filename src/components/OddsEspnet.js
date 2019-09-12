@@ -15,7 +15,7 @@ class OddsEspnet extends Component {
   barList(isLoading, data_loading_info) {
     this.props.changeTitle({
       left: null,
-      center: <div className="pointer" onClick={this.bindList.bind(this)}  ><div className="hidden-xs">Odds Esportenet</div>
+      center: <div className="pointer" onClick={this.bindList.bind(this)}  ><div className="hidden-xs">Odds C</div>
         {data_loading_info && <small className="last-update show-xs"><div><b>Atualização</b></div> {formatDate(data_loading_info.date_finish, "DD/MM/YY HH:mm:ss")} </small>}</div>, right: <div className="" onClick={this.showFilter.bind(this)}><i className="fas fa-filter show-xs"></i></div>
       , right:
         <i className="fas fa-filter  ml-2 text-dark font-md show-xs" onClick={this.showFilter.bind(this)}></i>
@@ -219,6 +219,8 @@ class OddsEspnet extends Component {
     this.props.hide();
   }
   formatP365(value) {
+    if(!value)
+    return "";
     var css = "";
     if (value < 0.85)
       css = "bg-green";
@@ -489,8 +491,8 @@ class OddsEspnet extends Component {
         </div>
         <div className="margin-top-filter" ></div>
         <div id="list">
-          <div className="div-odds table-responsive" >
-            <table id="table-odds" className="table-espnet table-scroll table-odds w-100" onClick={this.checkHideFilter} >
+          <div className="div-odds-espnet table-responsive" >
+            <table id="table-odds-espnet" className="table-odds-espnet table-scroll table-odds w-100" onClick={this.checkHideFilter} >
               <thead  >
                 <tr>
                   <th></th>
@@ -501,8 +503,10 @@ class OddsEspnet extends Component {
                   <th onClick={common.tableSort.bind(this, 'odd_name')} >Mercado</th>
                   <th onClick={common.tableSortNumber.bind(this, 'odd_365')} >A</th>
                   <th onClick={common.tableSortNumber.bind(this, 'odd_pin')} >B</th>
+                  <th onClick={common.tableSortNumber.bind(this, 'odd_espnet')} >C</th>
                   <th onClick={common.tableSortNumber.bind(this, 'pin365')} >B / A</th>
-                  <th onClick={common.tableSortNumber.bind(this, 'percent')}  >% EV</th>
+                  <th onClick={common.tableSortNumber.bind(this, 'bet365Espnet')} >A / C</th>
+                  <th onClick={common.tableSortNumber.bind(this, 'pinEspnet')} >B / C</th>
                 </tr>
               </thead>
               <tbody>
@@ -512,14 +516,20 @@ class OddsEspnet extends Component {
                     <i hidden={x.user_id !== '2'} className={'fas fa-user ml-1 float-right'}></i>
                   </td>
                   <td>{formatDate(x.start, "DD/MM HH:mm")}</td>
-                  <td><small><span className={x.updated_at > 30 ? 'text-warning font-weight-bold' : ''}>{x.updated_at}</span>/<span className={x.updated_at_pin > 30 ? 'text-warning font-weight-bold' : ''}>{x.updated_at_pin}</span></small></td>
+                  <td><small>
+                    <span hidden={!x.updated_at} className={x.updated_at > 30 ? 'text-warning font-weight-bold' : ''}>{x.updated_at}/</span>
+                    <span hidden={!x.updated_at_pin} className={x.updated_at_pin > 30 ? 'text-warning font-weight-bold' : ''}>{x.updated_at_pin}/</span>
+                    <span className={x.updated_at_espnet > 30 ? 'text-warning font-weight-bold' : ''}>{x.updated_at_espnet}</span>
+                    </small></td>
                   <td>{x.league_name}</td>
                   <td>{x.event_name}</td>
                   <td className={Number(x.diff_line) === 0 ? "" : "text-warning font-weight-bold"}>{x.odd_name}</td>
                   <td>{common.odd365(x.odd_365)}</td>
                   <td>{x.odd_pin}</td>
+                  <td>{x.odd_espnet}</td>
                   <td className={this.formatP365(x.pin365)}>{x.pin365} </td>
-                  <td>{x.percent}</td>
+                  <td className={this.formatP365(x.bet365Espnet)}>{x.bet365Espnet} </td>
+                  <td className={this.formatP365(x.pinEspnet)}>{x.pinEspnet} </td>
                 </tr>)}
               </tbody>
             </table>

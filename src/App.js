@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css'
-import './App.css';
+import './css/App.css';
+import './css/OddsEspnet.css';
 import Menu from './components/Menu';
 import Odds from './components/Odds';
 import Login from './components/Login';
@@ -88,17 +89,21 @@ class App extends Component {
 
     this.globalInterval = setInterval(() => {
       common.getData('data/dataloading.php?data=data_loading_percent').then((info) => {
+    
         if (info.status_id === "SU") { //Success means data loading finished
           if (this.state.isLoading) {
             //console.log(this.childComponent);
             if (this.childComponent && this.childComponent.bindList)
               this.childComponent.bindList();
-
-            this.setState({ isLoading: false, data_loading_info : info })
+  
+            this.setState({ isLoading: false, data_loading_info : info, isError : false})
           }
         }
+        else if(info.status_id === "ER"){
+          this.setState({ isLoading: false, data_loading_info : info, isError : true})
+        }
         else {
-          this.setState({ isLoading: true, data_loading_info : info })
+          this.setState({ isLoading: true, data_loading_info : info, isError : false  })
           document.getElementById('percent-bar').style.width = info.step_percent + '%';
           document.getElementById('percent-number').innerHTML = info.step_percent + '%';
         }
@@ -124,7 +129,7 @@ class App extends Component {
     document.getElementById('percent-bar').style.width = '0%';
     document.getElementById('percent-number').innerHTML = '0%';
 
-    this.setState({ isLoading: true })
+    this.setState({ isLoading: true, isError : false })
 
     common.getData('start.php').then((data) => {
 
@@ -136,16 +141,19 @@ class App extends Component {
         //Fill Loading Bar Percent
         common.getData('data/dataloading.php?data=data_loading_percent').then((info) => {
           console.log(info);
-          if (info.status_id === "SU") { //Success means data loading finished
+          if (info.status_id === "SU" || info.status_id === "ER") { //Success means data loading finished
             clearInterval(intervalLoading);
             if (this.childComponent && this.childComponent.bindList)
               this.childComponent.bindList();
-            this.setState({ isLoading: false })
+            this.setState({ isLoading: false , isError : info.status_id === "ER"})
 
             if (this.state.data_loading_interval !== "0") { // Means that loading is scheduled, so prepare to run the next one
               document.getElementById("btn_loading").setAttribute("disabled", "disabled");
               this.timeoutLoading = setTimeout(() => { this.loadData() }, Number(this.state.data_loading_interval) * 60 * 1000);
             }
+          }
+          else if(info.status_id === "ER"){
+            this.setState({ isLoading: false, data_loading_info : info, isError : true})
           }
           document.getElementById('percent-bar').style.width = info.step_percent + '%';
           document.getElementById('percent-number').innerHTML = info.step_percent + '%';
@@ -252,6 +260,7 @@ class App extends Component {
                       <div className="block-inline hidden-xs mr-2" >{formatDate(this.state.data_loading_info.date_finish, "DD/MM/YY HH:mm:ss")} ({this.state.data_loading_info.duration} seg.)</div>
                     }
                     <i className="mr-1 fas fa-cog text-dark" style={{ fontSize: 16, position: 'relative', top: '3px' }} onClick={this.customFilterOpen.bind(this)}></i>
+                    <i className="mr-1 fas fa-times-circle text-danger" title="Houve erro na última execução" hidden={!this.state.isError} style={{ fontSize: 16, position: 'relative', top: '3px' }}></i>
                     <button type="button" id="btn_loading" className={'mr-2 btn btn-sm btn-danger btn-loading'} onClick={this.loadDataClicked.bind(this)}>Atualizar</button>
 
                   </div>
