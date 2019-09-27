@@ -76,6 +76,7 @@ body:before {
   .modal-body{color:#ffbb33;min-width:768px}
 }
 /* GENERAL */
+
 .underline{text-decoration: underline}
 .last-update{font-weight: 'normal'; font-size:11px; display:block;margin-top:-2px}
 .p-0-5{padding: 2px}
@@ -434,6 +435,7 @@ td.top{vertical-align: top}
 .menu div{padding:0.01rem;padding-top: 0.1rem}
 .menu div div:hover{color:orange;cursor: pointer;}
 .navigation-bar{font-size:12pt;height: 40px;padding: 3px;position:fixed;top:0;z-index: 1000;background-color: rgb(231, 231, 231);width:100%;color:rgb(52, 60, 82);font-weight: bold}
+.title-error-message{font-size:10pt;margin-top:-6px;background-color: rgb(241, 76, 76);color:white;padding:0;font-size:8pt}
 .menu-more{transform: translateY(100%);position: fixed;top:0;left:0;background-image:var(--day);background-repeat: no-repeat;
   z-index:1000;height:var(--window);padding:1rem;width:100%;padding-top: 20px;overflow-y: hidden;visibility: hidden}
 .menu-more .menu-item{height:calc(var(--window) - 100px);overflow-y: scroll;-webkit-overflow-scrolling: touch !important;}
