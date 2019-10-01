@@ -52,7 +52,7 @@ class OddsEspnet extends Component {
     this.bindList();
     //GET FILTER CUSTOM
     common.getData('data/odds.php?data=filter_custom').then((dataList) => {
-
+    
       for (let i = 0; i < dataList.length; i++) {
         let x = dataList[i];
         for (var field in x) {
@@ -75,6 +75,7 @@ class OddsEspnet extends Component {
     this.props.show();
     let userId = common.getUser().id;
     common.getData('data/odds.php?data=espnet&date=' + this.state.filter_date + '&user_id=' + userId).then((items) => {
+   
       let bets = items.filter(x => x.user_id !== null);
       this.setState({ itemsAll: items.filter(x => x.user_id === null), bets });
       setTimeout(() => { this.filterImportant() }, 1);
@@ -504,9 +505,12 @@ class OddsEspnet extends Component {
                   <th onClick={common.tableSortNumber.bind(this, 'odd_365')} >A</th>
                   <th onClick={common.tableSortNumber.bind(this, 'odd_pin')} >B</th>
                   <th onClick={common.tableSortNumber.bind(this, 'odd_espnet')} >C</th>
+                  <th onClick={common.tableSortNumber.bind(this, 'odd_espnet_sp')} >D</th>
                   <th onClick={common.tableSortNumber.bind(this, 'pin365')} >B / A</th>
                   <th onClick={common.tableSortNumber.bind(this, 'bet365Espnet')} >A / C</th>
                   <th onClick={common.tableSortNumber.bind(this, 'pinEspnet')} >B / C</th>
+                  <th onClick={common.tableSortNumber.bind(this, 'bet365Espnet_sp')} >A / D</th>
+                  <th onClick={common.tableSortNumber.bind(this, 'pinEspnet_sp')} >B / D</th>
                 </tr>
               </thead>
               <tbody>
@@ -527,9 +531,12 @@ class OddsEspnet extends Component {
                   <td>{common.odd365(x.odd_365)}</td>
                   <td>{x.odd_pin}</td>
                   <td>{x.odd_espnet}</td>
+                  <td>{x.odd_espnet_sp}</td>
                   <td className={this.formatP365(x.pin365)}>{x.pin365} </td>
                   <td className={this.formatP365(x.bet365Espnet)}>{x.bet365Espnet} </td>
                   <td className={this.formatP365(x.pinEspnet)}>{x.pinEspnet} </td>
+                  <td className={this.formatP365(x.bet365Espnet_sp)}>{x.bet365Espnet_sp} </td>
+                  <td className={this.formatP365(x.pinEspnet_sp)}>{x.pinEspnet_sp} </td>
                 </tr>)}
               </tbody>
             </table>

@@ -91,12 +91,12 @@ class App extends Component {
       common.getData('data/dataloading.php?data=data_loading_percent').then((info) => {
 
         if (info.status_id === "SU") { //Success means data loading finished
-          if (this.state.isLoading) {
+          if (this.state.isLoading || !this.state.first_check) {
             //console.log(this.childComponent);
-            if (this.childComponent && this.childComponent.bindList)
+            if (this.childComponent && this.childComponent.bindList && this.state.first_check)
               this.childComponent.bindList();
 
-            this.setState({ isLoading: false, data_loading_info: info, isError: false })
+            this.setState({ isLoading: false, data_loading_info: info, isError: false, first_check: true  })
           }
         }
         else if (info.status_id === "ER") {
@@ -263,7 +263,7 @@ class App extends Component {
                       <div className="block-inline hidden-xs mr-2" >{formatDate(this.state.data_loading_info.date_finish, "DD/MM/YY HH:mm:ss")} ({this.state.data_loading_info.duration} seg.)</div>
                     }
                     <i className="mr-1 fas fa-cog text-dark" style={{ fontSize: 16, position: 'relative', top: '3px' }} onClick={this.customFilterOpen.bind(this)}></i>
-                    <i className="mr-1 fas fa-times-circle text-danger" title={this.state.data_loading_info ? this.state.data_loading_info.error_msg : ''} hidden={!this.state.isError} style={{ fontSize: 16, position: 'relative', top: '3px' }}></i>
+                    <i className="mr-1 fas fa-times-circle text-danger" onClick={() => { alert(this.state.data_loading_info ? 'Houve um erro na última execução:\r\r' + this.state.data_loading_info.error_msg : '') }} title={this.state.data_loading_info ? this.state.data_loading_info.error_msg : ''} hidden={!this.state.isError} style={{ fontSize: 16, position: 'relative', top: '3px' }}></i>
                     <button type="button" id="btn_loading" className={'mr-2 btn btn-sm btn-danger btn-loading'} onClick={this.loadDataClicked.bind(this)}>Atualizar</button>
                   </div>
                 </div>
