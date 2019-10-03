@@ -49,6 +49,7 @@ class App extends Component {
     apple: 1,
     data_loading_interval: '0',
     minutes: [],
+    runningCount: 0
   }
   changeTitleHandler = title => {
 
@@ -96,31 +97,44 @@ class App extends Component {
             if (this.childComponent && this.childComponent.bindList && this.state.first_check)
               this.childComponent.bindList();
 
-            this.setState({ isLoading: false, data_loading_info: info, isError: false, first_check: true  })
+            this.setState({ isLoading: false, data_loading_info: info, isError: false, first_check: true, runningCount: 0 })
+            this.nextLoadData(info.user_id);
           }
         }
         else if (info.status_id === "ER") {
-          if (this.state.isLoading || !this.state.first_check)
-            this.setState({ isLoading: false, data_loading_info: info, isError: true, first_check: true })
+          if (this.state.isLoading || !this.state.first_check) {
+            this.setState({ isLoading: false, data_loading_info: info, isError: true, first_check: true, runningCount: 0 })
+            this.nextLoadData(info.user_id);
+          }
         }
         else {
-          this.setState({ isLoading: true, data_loading_info: info, isError: false })
+          console.log(info);
           document.getElementById('percent-bar').style.width = info.step_percent + '%';
           document.getElementById('percent-number').innerHTML = info.step_percent + '%';
+
+          this.setState({ isLoading: true, data_loading_info: info, isError: false, runningCount: this.state.runningCount + 1 })
+          if (this.state.runningCount === 70) { //It means service got stuck
+
+            common.getData('clear.php').then((info) => {
+              this.setState({ isLoading: false, data_loading_info: info, isError: true, first_check: true, runningCount: 0 });
+              this.nextLoadData(info.user_id);
+            });
+          }
         }
       });
     }, 5000);
   }
   loadDataClicked = () => {
     let that = this;
+    this.loadingShow();
     let dataInput = { user_id: common.getUser().id, interval: this.state.data_loading_interval };
     common.postData('data/dataloading.php?data=set_user', dataInput).then(function (data) {
 
       if (data.message) {
+        this.loadingHide();
         alert(data.message);
         return;
       }
-      clearInterval(that.globalInterval);
       that.loadData();
 
     });
@@ -129,38 +143,15 @@ class App extends Component {
 
     document.getElementById('percent-bar').style.width = '0%';
     document.getElementById('percent-number').innerHTML = '0%';
-
-    this.setState({ isLoading: true, isError: false })
-
+    this.setState({ isLoading: true, isError: false, loading: '' })
     common.getData('start.php').then((data) => {
-
-    }, (err) => { clearInterval(intervalLoading); this.setState({ isLoading: false }); console.log(err) })
-
-    var intervalLoading = null;
-    setTimeout(() => {
-      intervalLoading = setInterval(() => {
-        //Fill Loading Bar Percent
-        common.getData('data/dataloading.php?data=data_loading_percent').then((info) => {
-          console.log(info);
-          if (info.status_id === "SU" || info.status_id === "ER") { //Success means data loading finished
-            clearInterval(intervalLoading);
-            if (this.childComponent && this.childComponent.bindList)
-              this.childComponent.bindList();
-            this.setState({ isLoading: false, isError: info.status_id === "ER" })
-
-            if (this.state.data_loading_interval !== "0") { // Means that loading is scheduled, so prepare to run the next one
-              document.getElementById("btn_loading").setAttribute("disabled", "disabled");
-              this.timeoutLoading = setTimeout(() => { this.loadData() }, Number(this.state.data_loading_interval) * 60 * 1000);
-            }
-          }
-          else if (info.status_id === "ER") {
-            this.setState({ isLoading: false, data_loading_info: info, isError: true })
-          }
-          document.getElementById('percent-bar').style.width = info.step_percent + '%';
-          document.getElementById('percent-number').innerHTML = info.step_percent + '%';
-        });
-      }, 5000);
-    }, 3000);
+    }, (err) => { this.setState({ isLoading: false, isError: false }); console.log(err) });
+  }
+  nextLoadData(userId) {
+    if (common.getUser().id == userId && this.state.data_loading_interval !== "0") { // Means that loading is scheduled, so prepare to run the next one
+      document.getElementById("btn_loading").setAttribute("disabled", "disabled");
+      this.timeoutLoading = setTimeout(() => { this.loadData() }, Number(this.state.data_loading_interval) * 60 * 1000);
+    }
   }
   handleChange = e => {
     let data = this.state.data;
@@ -251,24 +242,26 @@ class App extends Component {
                 {this.state.title.center}
               </div>
               <div className="col text-right align-self-center">
-                <div className="block-inline" hidden={!common.getUser()}  >
-                  <div className="loading-bar" hidden={!this.state.isLoading}>
-                    <div className="container">
-                      <div className="percent-bar" id="percent-bar"></div>
-                      <span className="percent-number" id="percent-number">0%</span>
+                <div style={{ display: 'flex' }} className="justify-content-end" >
+                  <div hidden={!common.getUser()}  >
+                    <div className="loading-bar" hidden={!this.state.isLoading}>
+                      <div className="container">
+                        <div className="percent-bar" id="percent-bar"></div>
+                        <span className="percent-number" id="percent-number">0%</span>
+                      </div>
+                    </div>
+                    <div className="data-loading-info" hidden={this.state.isLoading} >
+                      {this.state.data_loading_info &&
+                        <div className="block-inline hidden-xs mr-2" >{formatDate(this.state.data_loading_info.date_finish, "DD/MM/YY HH:mm:ss")} ({this.state.data_loading_info.duration} seg.)</div>
+                      }
+                      <i className="mr-1 fas fa-cog text-dark" style={{ fontSize: 16, position: 'relative', top: '3px' }} onClick={this.customFilterOpen.bind(this)}></i>
+                      <i className="mr-1 fas fa-times-circle text-danger" onClick={() => { alert(this.state.data_loading_info ? 'Houve um erro na última execução:\r\r' + this.state.data_loading_info.error_msg : '') }} title={this.state.data_loading_info ? this.state.data_loading_info.error_msg : ''} hidden={!this.state.isError} style={{ fontSize: 16, position: 'relative', top: '3px' }}></i>
+                      <button type="button" id="btn_loading" className={'mr-2 btn btn-sm btn-danger btn-loading'} onClick={this.loadDataClicked.bind(this)}>Atualizar</button>
                     </div>
                   </div>
-                  <div className="data-loading-info" hidden={this.state.isLoading} >
-                    {this.state.data_loading_info &&
-                      <div className="block-inline hidden-xs mr-2" >{formatDate(this.state.data_loading_info.date_finish, "DD/MM/YY HH:mm:ss")} ({this.state.data_loading_info.duration} seg.)</div>
-                    }
-                    <i className="mr-1 fas fa-cog text-dark" style={{ fontSize: 16, position: 'relative', top: '3px' }} onClick={this.customFilterOpen.bind(this)}></i>
-                    <i className="mr-1 fas fa-times-circle text-danger" onClick={() => { alert(this.state.data_loading_info ? 'Houve um erro na última execução:\r\r' + this.state.data_loading_info.error_msg : '') }} title={this.state.data_loading_info ? this.state.data_loading_info.error_msg : ''} hidden={!this.state.isError} style={{ fontSize: 16, position: 'relative', top: '3px' }}></i>
-                    <button type="button" id="btn_loading" className={'mr-2 btn btn-sm btn-danger btn-loading'} onClick={this.loadDataClicked.bind(this)}>Atualizar</button>
+                  <div>
+                    {this.state.title.right}
                   </div>
-                </div>
-                <div className="block-inline" >
-                  {this.state.title.right}
                 </div>
               </div>
             </div>
