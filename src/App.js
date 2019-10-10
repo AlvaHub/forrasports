@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css'
 import './css/App.css';
 import './css/OddsEspnet.css';
+import './css/OddsSure.css';
 import Menu from './components/Menu';
 import Odds from './components/Odds';
 import Login from './components/Login';
@@ -12,6 +13,7 @@ import * as common from './components/Common';
 import MenuIcon from './components/MenuIcon'
 import OddHistory from './components/OddHistory'
 import OddsEspnet from './components/OddsEspnet'
+import OddsSure from './components/OddsSure'
 import { formatDate } from 'react-day-picker/moment';
 import MyModal from './components/MyModal';
 import { BrowserRouter, Route } from 'react-router-dom'
@@ -38,8 +40,8 @@ class App extends Component {
       if (!common.getUser())
         return;
       let dataInput = { user_id: common.getUser().id };
-      common.postData('data/dataloading.php?data=clear_user', dataInput).then(function () {
-      });
+      //common.postData('data/dataloading.php?data=clear_user', dataInput).then(function () {
+      //});
     });
   }
   state = {
@@ -71,7 +73,9 @@ class App extends Component {
 
     //Check if data loading is running and keep the loading bar updating 
     this.checkLoading();
-
+    this.globalInterval = setInterval(() => {
+      this.checkLoading();
+    }, 5000);
   }
   componentWillUnmount() {
 
@@ -88,41 +92,40 @@ class App extends Component {
   }
   checkLoading = () => {
 
-    this.globalInterval = setInterval(() => {
-      common.getData('data/dataloading.php?data=data_loading_percent').then((info) => {
 
-        if (info.status_id === "SU") { //Success means data loading finished
-          if (this.state.isLoading || !this.state.first_check) {
-            //console.log(this.childComponent);
-            if (this.childComponent && this.childComponent.bindList && this.state.first_check)
-              this.childComponent.bindList();
+    common.getData('data/dataloading.php?data=data_loading_percent').then((info) => {
 
-            this.setState({ isLoading: false, data_loading_info: info, isError: false, first_check: true, runningCount: 0 })
+      if (info.status_id === "SU") { //Success means data loading finished
+        if (this.state.isLoading || !this.state.first_check) {
+          //console.log(this.childComponent);
+          if (this.childComponent && this.childComponent.bindList && this.state.first_check)
+            this.childComponent.bindList();
+
+          this.setState({ isLoading: false, data_loading_info: info, isError: false, first_check: true, runningCount: 0 })
+          this.nextLoadData(info.user_id);
+        }
+      }
+      else if (info.status_id === "ER") {
+        if (this.state.isLoading || !this.state.first_check) {
+          this.setState({ isLoading: false, data_loading_info: info, isError: true, first_check: true, runningCount: 0 })
+          this.nextLoadData(info.user_id);
+        }
+      }
+      else {
+        document.getElementById('percent-bar').style.width = info.step_percent + '%';
+        document.getElementById('percent-number').innerHTML = info.step_percent + '%';
+
+        this.setState({ isLoading: true, data_loading_info: info, isError: false, runningCount: this.state.runningCount + 1 })
+        if (this.state.runningCount === 70) { //It means service got stuck
+
+          common.getData('clear.php').then((info) => {
+            this.setState({ isLoading: false, data_loading_info: info, isError: true, first_check: true, runningCount: 0 });
             this.nextLoadData(info.user_id);
-          }
+          });
         }
-        else if (info.status_id === "ER") {
-          if (this.state.isLoading || !this.state.first_check) {
-            this.setState({ isLoading: false, data_loading_info: info, isError: true, first_check: true, runningCount: 0 })
-            this.nextLoadData(info.user_id);
-          }
-        }
-        else {
-          console.log(info);
-          document.getElementById('percent-bar').style.width = info.step_percent + '%';
-          document.getElementById('percent-number').innerHTML = info.step_percent + '%';
+      }
+    });
 
-          this.setState({ isLoading: true, data_loading_info: info, isError: false, runningCount: this.state.runningCount + 1 })
-          if (this.state.runningCount === 70) { //It means service got stuck
-
-            common.getData('clear.php').then((info) => {
-              this.setState({ isLoading: false, data_loading_info: info, isError: true, first_check: true, runningCount: 0 });
-              this.nextLoadData(info.user_id);
-            });
-          }
-        }
-      });
-    }, 5000);
   }
   loadDataClicked = () => {
     let that = this;
@@ -148,6 +151,7 @@ class App extends Component {
     }, (err) => { this.setState({ isLoading: false, isError: false }); console.log(err) });
   }
   nextLoadData(userId) {
+
     if (common.getUser().id == userId && this.state.data_loading_interval !== "0") { // Means that loading is scheduled, so prepare to run the next one
       document.getElementById("btn_loading").setAttribute("disabled", "disabled");
       this.timeoutLoading = setTimeout(() => { this.loadData() }, Number(this.state.data_loading_interval) * 60 * 1000);
@@ -275,6 +279,7 @@ class App extends Component {
             <Route path="/admin/parameter" render={() => <Parameter changeTitle={this.changeTitleHandler} show={this.loadingShow} hide={this.loadingHide} />} />
             <Route path="/odd-history" render={() => <OddHistory changeTitle={this.changeTitleHandler} show={this.loadingShow} hide={this.loadingHide} />} />
             <Route path="/odds-espnet" render={() => <OddsEspnet setChild={this.setChild} changeTitle={this.changeTitleHandler} show={this.loadingShow} hide={this.loadingHide} />} />
+            <Route path="/odds-sure" render={() => <OddsSure setChild={this.setChild} changeTitle={this.changeTitleHandler} show={this.loadingShow} hide={this.loadingHide} />} />
           </div>
           <div className={'loading ' + this.state.loading} ><img src={loadingImage} alt="" /></div>
         </React.Fragment >
