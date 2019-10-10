@@ -25,7 +25,7 @@
 .table-odds-sure tbody td:nth-child(11), .table-odds-sure thead th:nth-child(11){width: 5%}
 .table-odds-sure tbody td:nth-child(11), .table-odds-sure thead th:nth-child(11){width: 5%}
 .table-odds-sure tbody td:nth-child(12), .table-odds-sure thead th:nth-child(12){width: 5%}
-.table-odds-sure tbody td:nth-child(13), .table-odds-sure thead th:nth-child(13){width: 10%}
+.table-odds-sure tbody td:nth-child(13), .table-odds-sure thead th:nth-child(13){width: 15%}
 
 
 /* TABLE sure */
@@ -33,4 +33,10 @@
 .table-odds-sure th{padding:0.25rem;color:rgb(221, 221, 221);background-color: rgb(54, 54, 54);}
 .table-odds-sure td{background-color: rgb(26, 26, 26);padding:0.25rem;color:rgb(221, 221, 221);border:0px solid rgb(100, 100, 100)}
 .table-odds-sure tr:nth-child(odd) td{background-color: rgb(17, 17, 17)}
-.table-odds-sure>tbody::-webkit-scrollbar{background-color: rgb(33, 41, 54)}
+.table-odds-sure>tbody::-webkit-scrollbar{background-color: rgb(29, 29, 29)}
+.posibilities{max-height: 200px;overflow-y: overlay} 
+.posibilities::-webkit-scrollbar{background-color: rgb(65, 65, 65);}
+.posibilities::-webkit-scrollbar-thumb{background-color:rgb(161, 161, 161)}
+.posibilities::-webkit-scrollbar-track{background-color:rgb(29, 29, 29)}
+.posibilities-item{background-color: rgb(41, 41, 41);}
+.posibilities-item:nth-child(even){background-color: transparent}
