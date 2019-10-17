@@ -31,7 +31,7 @@
 /* TABLE sure */
 .table-odds-sure {border-collapse: collapse}
 .table-odds-sure th{padding:0.25rem;color:rgb(221, 221, 221);background-color: rgb(54, 54, 54);}
-.table-odds-sure td{background-color: rgb(26, 26, 26);padding:0.25rem;color:rgb(221, 221, 221);border:0px solid rgb(100, 100, 100)}
+.table-odds-sure td{background-color: rgb(26, 26, 26);padding:0.25rem;color:rgb(221, 221, 221);border:1px solid rgb(27, 27, 27)}
 .table-odds-sure tr:nth-child(odd) td{background-color: rgb(17, 17, 17)}
 .table-odds-sure>tbody::-webkit-scrollbar{background-color: rgb(29, 29, 29)}
 .posibilities{max-height: 200px;overflow-y: overlay} 

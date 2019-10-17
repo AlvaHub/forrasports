@@ -12,28 +12,12 @@ class OddsEspnet extends Component {
 
 
   }
-  barList(isLoading, data_loading_info) {
+  barList() {
     this.props.changeTitle({
       left: null,
-      center: <div className="pointer" onClick={this.bindList.bind(this)}  ><div className="hidden-xs">Odds C</div>
-        {data_loading_info && <small className="last-update show-xs"><div><b>Atualização</b></div> {formatDate(data_loading_info.date_finish, "DD/MM/YY HH:mm:ss")} </small>}</div>, right: <div className="" onClick={this.showFilter.bind(this)}><i className="fas fa-filter show-xs"></i></div>
-      , right:
-        <i className="fas fa-filter  ml-2 text-dark font-md show-xs" onClick={this.showFilter.bind(this)}></i>
+      center: <div className="pointer" onClick={this.bindList.bind(this)}  ><div className="hidden-xs">Odds C</div></div>,
+      right: <i className="fas fa-filter  ml-2 text-dark font-md show-xs" onClick={this.showFilter.bind(this)}></i>
     });
-  }
-  barForm = (title) => {
-    this.props.changeTitle({
-      left: <div className="btn-back" onClick={() => this.back()}><i className="fas fa-arrow-alt-circle-left"></i> Voltar</div>, center: title,
-
-    });
-  }
-  back() {
-    this.barList();
-    document.getElementById('detail').className = 'form  pb-0 go';
-    document.getElementById('list').className = '';
-    document.getElementById('filter').className = 'filter hidden-xs';
-    common.scrollLast();
-
   }
   componentWillUnmount() {
     this.props.setChild(null);
@@ -47,9 +31,17 @@ class OddsEspnet extends Component {
       minutes.push(index);
     this.setState({ minutes });
 
-    this.barList(false);
     //BIND LIST
-    this.bindList();
+    this.barList();
+    common.getData('data/odds.php?data=dates').then(
+      (dates) => {
+        dates.push(...this.state.datesPlus);
+        if (dates.length > 0) {
+          this.setState({ dates, filter_date: dates[0].id })
+          setTimeout(() => { this.bindList(); }, 1);
+        }
+      }
+    );
     //GET FILTER CUSTOM
     common.getData('data/odds.php?data=filter_custom').then((dataList) => {
 
@@ -76,49 +68,39 @@ class OddsEspnet extends Component {
     let userId = common.getUser().id;
     common.getData('data/odds.php?data=espnet&date=' + this.state.filter_date + '&user_id=' + userId).then((items) => {
 
-      items.forEach(x => {
-        if (x.odd_name === 'Home or Draw' || x.odd_name === 'Away or Draw') {
-          let homeAway = x.odd_name === 'Home or Draw' ? 'Home' : 'Away';
-          let search = items.filter(y => (y.odd_name === homeAway || y.odd_name === 'Draw') && x.event_name === y.event_name);
-          if (search.length === 2) {
-            let searchHome = search.find(y => y.odd_name === homeAway);
-            let searchDraw = search.find(y => y.odd_name === 'Draw');
-            x.espnet_home_draw = (1 / ((1 / Number(search[0].odd_espnet)) + (1 / Number(search[1].odd_espnet)))).toFixed(2);
-            x.espnet_home = searchHome.odd_espnet;
-            x.espnet_draw = searchDraw.odd_espnet;
-            if (search[0].odd_365 && search[1].odd_365) {
-              x.bet365_home_draw = (1 / ((1 / Number(search[0].odd_365)) + (1 / Number(search[1].odd_365)))).toFixed(2);
-              x.bet365_home = searchHome.odd_365;
-              x.bet365_draw = searchDraw.odd_365;
-            }
-            if (search[0].odd_pin && search[1].odd_pin) {
-              x.pin_home_draw = (1 / ((1 / Number(search[0].odd_pin)) + (1 / Number(search[1].odd_pin)))).toFixed(2);
-              x.pin_home = searchHome.odd_pin;
-              x.pin_draw = searchDraw.odd_pin;
-            }
-            if (search[0].odd_espnet_sp && search[1].odd_espnet_sp) {
-              x.espnet_sp_home_draw = (1 / ((1 / Number(search[0].odd_espnet_sp)) + (1 / Number(search[1].odd_espnet_sp)))).toFixed(2);
-              x.espnet_sp_home = searchHome.odd_espnet_sp;
-              x.espnet_sp_draw = searchDraw.odd_espnet_sp;
-            }
-          }
-        }
-      });
+
+      // items.forEach(x => {
+      //   if (x.odd_name === 'Home or Draw' || x.odd_name === 'Away or Draw') {
+      //     let homeAway = x.odd_name === 'Home or Draw' ? 'Home' : 'Away';
+      //     let search = items.filter(y => (y.odd_name === homeAway || y.odd_name === 'Draw') && x.event_name === y.event_name);
+      //     if (search.length === 2) {
+      //       let searchHome = search.find(y => y.odd_name === homeAway);
+      //       let searchDraw = search.find(y => y.odd_name === 'Draw');
+      //       x.espnet_home_draw = (1 / ((1 / Number(search[0].odd_espnet)) + (1 / Number(search[1].odd_espnet)))).toFixed(2);
+      //       x.espnet_home = searchHome.odd_espnet;
+      //       x.espnet_draw = searchDraw.odd_espnet;
+      //       if (search[0].odd_365 && search[1].odd_365) {
+      //         x.bet365_home_draw = (1 / ((1 / Number(search[0].odd_365)) + (1 / Number(search[1].odd_365)))).toFixed(2);
+      //         x.bet365_home = searchHome.odd_365;
+      //         x.bet365_draw = searchDraw.odd_365;
+      //       }
+      //       if (search[0].odd_pin && search[1].odd_pin) {
+      //         x.pin_home_draw = (1 / ((1 / Number(search[0].odd_pin)) + (1 / Number(search[1].odd_pin)))).toFixed(2);
+      //         x.pin_home = searchHome.odd_pin;
+      //         x.pin_draw = searchDraw.odd_pin;
+      //       }
+      //       if (search[0].odd_espnet_sp && search[1].odd_espnet_sp) {
+      //         x.espnet_sp_home_draw = (1 / ((1 / Number(search[0].odd_espnet_sp)) + (1 / Number(search[1].odd_espnet_sp)))).toFixed(2);
+      //         x.espnet_sp_home = searchHome.odd_espnet_sp;
+      //         x.espnet_sp_draw = searchDraw.odd_espnet_sp;
+      //       }
+      //     }
+      //   }
+      // });
       let bets = items.filter(x => x.user_id !== null);
       this.setState({ itemsAll: items.filter(x => x.user_id === null), bets });
       setTimeout(() => { this.filterImportant() }, 1);
     });
-    common.getData('data/dataloading.php?data=data_loading').then((data_loading) => {
-      this.barList(false, data_loading);
-      this.setState({ data_loading })
-    });
-    common.getData('data/odds.php?data=dates').then(
-      (dates) => {
-
-        dates.push(...this.state.datesPlus);
-        this.setState({ dates })
-      }
-    );
   }
   componentDidUpdate() {
   }
@@ -519,9 +501,9 @@ class OddsEspnet extends Component {
                   <td>{x.league_name}</td>
                   <td>{x.event_name}</td>
                   <td className={Number(x.diff_line) === 0 ? "" : "text-warning font-weight-bold"}>{x.odd_name}</td>
-                  <td>{common.odd365(x.odd_365)}<span className="text-warning ml-1" hidden={!x.bet365_home_draw} title={x.bet365_home + ' ' + x.bet365_draw} >{x.bet365_home_draw}</span></td>
-                  <td>{x.odd_pin}<span className="text-warning ml-1" hidden={!x.pin_home_draw}  title={x.pin_home + ' ' + x.pin_draw} >{x.pin_home_draw}</span></td>
-                  <td>{x.odd_espnet}<span className="text-warning ml-1" hidden={!x.espnet_home_draw} title={x.espnet_home + ' ' + x.espnet_draw} >{x.espnet_home_draw}</span></td>
+                  <td  className={x.home_away_365 ? 'odd-atificial' : ''} title={x.home_away_365 ? x.home_away_365 + ' ' + x.draw_365 + ' Original: ' + x.odd_original_365 : ''} >{common.odd365(x.odd_365)}<span className="text-warning ml-1" hidden={!x.bet365_home_draw} title={x.bet365_home + ' ' + x.bet365_draw} >{x.bet365_home_draw}</span></td>
+                  <td>{x.odd_pin}<span className="text-warning ml-1" hidden={!x.pin_home_draw} title={x.pin_home + ' ' + x.pin_draw} >{x.pin_home_draw}</span></td>
+                  <td className={x.home_away_espnet ? 'odd-atificial' : ''} title={x.home_away_espnet ? x.home_away_espnet + ' ' + x.draw_espnet+ ' Original: ' + x.odd_original_espnet : ''} >{x.odd_espnet}<span className="text-warning ml-1" hidden={!x.espnet_home_draw} title={x.espnet_home + ' ' + x.espnet_draw} >{x.espnet_home_draw}</span></td>
                   <td>{x.odd_espnet_sp}<span className="text-warning ml-1" hidden={!x.espnet_sp_home_draw} title={x.espnet_sp_home + ' ' + x.espnet_sp_draw} >{x.espnet_sp_home_draw}</span></td>
                   <td className={this.formatP365(x.pin365)}>{x.pin365} </td>
                   <td className={this.formatP365(x.bet365Espnet)}>{x.bet365Espnet} </td>

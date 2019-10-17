@@ -35,14 +35,14 @@ class App extends Component {
     this.handleShow = this.handleShow.bind(this);
     this.handleClose = this.handleClose.bind(this);
 
-    window.addEventListener("beforeunload", function (e) {
-      //Clear User
-      if (!common.getUser())
-        return;
-      let dataInput = { user_id: common.getUser().id };
-      //common.postData('data/dataloading.php?data=clear_user', dataInput).then(function () {
-      //});
-    });
+    // window.addEventListener("beforeunload", function (e) {
+    //   //Clear User
+    //   if (!common.getUser())
+    //     return;
+    //   let dataInput = { user_id: common.getUser().id };
+    //   //common.postData('data/dataloading.php?data=clear_user', dataInput).then(function () {
+    //   //});
+    // });
   }
   state = {
     title: { left: '', center: "Natan Sports", right: '' },
@@ -114,7 +114,6 @@ class App extends Component {
       else {
         document.getElementById('percent-bar').style.width = info.step_percent + '%';
         document.getElementById('percent-number').innerHTML = info.step_percent + '%';
-
         this.setState({ isLoading: true, data_loading_info: info, isError: false, runningCount: this.state.runningCount + 1 })
         if (this.state.runningCount === 70) { //It means service got stuck
 
@@ -148,13 +147,18 @@ class App extends Component {
     document.getElementById('percent-number').innerHTML = '0%';
     this.setState({ isLoading: true, isError: false, loading: '' })
     common.getData('start.php').then((data) => {
+      
     }, (err) => { this.setState({ isLoading: false, isError: false }); console.log(err) });
   }
   nextLoadData(userId) {
 
     if (common.getUser().id == userId && this.state.data_loading_interval !== "0") { // Means that loading is scheduled, so prepare to run the next one
       document.getElementById("btn_loading").setAttribute("disabled", "disabled");
+      
+      if (this.timeoutLoading)
+        clearTimeout(this.timeoutLoading);
       this.timeoutLoading = setTimeout(() => { this.loadData() }, Number(this.state.data_loading_interval) * 60 * 1000);
+      //Number(this.state.data_loading_interval) * 60 * 1000
     }
   }
   handleChange = e => {

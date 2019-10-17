@@ -10,30 +10,15 @@ class Odds extends Component {
   constructor(props) {
     super(props);
 
-   
+
   }
-  barList(isLoading, data_loading_info) {
+  barList() {
     this.props.changeTitle({
       left: null,
-      center: <div className="pointer" onClick={this.bindList.bind(this)}  ><div className="hidden-xs">Odds</div>
-        {data_loading_info && <small className="last-update show-xs"><div><b>Atualização</b></div> {formatDate(data_loading_info.date_finish, "DD/MM/YY HH:mm:ss")} </small>}</div>, right: <div className="" onClick={this.showFilter.bind(this)}><i className="fas fa-filter show-xs"></i></div>
-      , right: <i className="fas fa-filter  ml-2 text-dark font-md show-xs" onClick={this.showFilter.bind(this)}></i>
+      center: <div className="pointer" onClick={this.bindList.bind(this)}  ><div className="hidden-xs">Odds</div></div>,
+      right: <i className="fas fa-filter  ml-2 text-dark font-md show-xs" onClick={this.showFilter.bind(this)}></i>
 
     });
-  }
-  barForm = (title) => {
-    this.props.changeTitle({
-      left: <div className="btn-back" onClick={() => this.back()}><i className="fas fa-arrow-alt-circle-left"></i> Voltar</div>, center: title,
-
-    });
-  }
-  back() {
-    this.barList();
-    document.getElementById('detail').className = 'form  pb-0 go';
-    document.getElementById('list').className = '';
-    document.getElementById('filter').className = 'filter hidden-xs';
-    common.scrollLast();
-
   }
   componentWillUnmount() {
     this.props.setChild(null);
@@ -50,9 +35,17 @@ class Odds extends Component {
       minutes.push(index);
     this.setState({ minutes });
 
-    this.barList(false);
     //BIND LIST
-    this.bindList();
+    this.barList();
+    common.getData('data/odds.php?data=dates').then(
+      (dates) => {
+        dates.push(...this.state.datesPlus);
+        if (dates.length > 0) {
+          this.setState({ dates, filter_date: dates[0].id })
+          setTimeout(() => { this.bindList(); }, 1);
+        }
+      }
+    );
     //GET FILTER CUSTOM
     common.getData('data/odds.php?data=filter_custom').then((dataList) => {
 
@@ -82,23 +75,6 @@ class Odds extends Component {
       this.setState({ itemsAll: items.filter(x => x.user_id === null), bets });
       setTimeout(() => { this.filterImportant() }, 1);
     });
-    common.getData('data/dataloading.php?data=data_loading').then((data_loading) => {
-      this.barList(false, data_loading);
-      this.setState({ data_loading })
-    });
-    common.getData('data/odds.php?data=dates').then(
-      (dates) => {
-
-        dates.push(...this.state.datesPlus);
-        this.setState({ dates })
-      }
-    );
-    //GET BETS SELECTED BY USER
-    // common.getData("data/betuser.php?data=by_user&user_id=" + common.getUser().id).then((bets) => {
-    //   if (bets.length > 0) {
-    //     this.setState({ bets });
-    //   }
-    // });
   }
   componentDidUpdate() {
 

@@ -12,28 +12,12 @@ class OddsSure extends Component {
 
 
   }
-  barList(isLoading, data_loading_info) {
+  barList() {
     this.props.changeTitle({
       left: null,
-      center: <div className="pointer" onClick={this.bindList.bind(this)}  ><div className="hidden-xs">Odds Sure Bet</div>
-        {data_loading_info && <small className="last-update show-xs"><div><b>Atualização</b></div> {formatDate(data_loading_info.date_finish, "DD/MM/YY HH:mm:ss")} </small>}</div>, right: <div className="" onClick={this.showFilter.bind(this)}><i className="fas fa-filter show-xs"></i></div>
-      , right:
-        <i className="fas fa-filter  ml-2 text-dark font-md show-xs" onClick={this.showFilter.bind(this)}></i>
+      center: <div className="pointer" onClick={this.bindList.bind(this)}  ><div className="hidden-xs">Odds Sure Bet</div></div>,
+      right: <i className="fas fa-filter  ml-2 text-dark font-md show-xs" onClick={this.showFilter.bind(this)}></i>
     });
-  }
-  barForm = (title) => {
-    this.props.changeTitle({
-      left: <div className="btn-back" onClick={() => this.back()}><i className="fas fa-arrow-alt-circle-left"></i> Voltar</div>, center: title,
-
-    });
-  }
-  back() {
-    this.barList();
-    document.getElementById('detail').className = 'form  pb-0 go';
-    document.getElementById('list').className = '';
-    document.getElementById('filter').className = 'filter hidden-xs';
-    common.scrollLast();
-
   }
   componentWillUnmount() {
     this.props.setChild(null);
@@ -47,9 +31,17 @@ class OddsSure extends Component {
       minutes.push(index);
     this.setState({ minutes });
 
-    this.barList(false);
     //BIND LIST
-    this.bindList();
+    this.barList();
+    common.getData('data/odds.php?data=dates').then(
+      (dates) => {
+        dates.push(...this.state.datesPlus);
+        if (dates.length > 0) {
+          this.setState({ dates, filter_date: dates[0].id })
+          setTimeout(() => { this.bindList(); }, 1);
+        }
+      }
+    );
     //GET FILTER CUSTOM
     common.getData('data/odds.php?data=filter_custom').then((dataList) => {
 
@@ -86,20 +78,24 @@ class OddsSure extends Component {
           let lastStake = 0
           let proportion = 1000;
           let proportionHalf = proportion / 2;
+          let possibilities = [];
+          let stake_small = '';
+          let stake_big = ''
           for (let stake = proportionHalf; stake < proportion; stake++) {
             if (oddSmall * stake > proportion && oddBig * (proportion - stake) > proportion) {
+              let difference = Math.abs((((oddSmall * stake) - (oddBig * (proportion - stake)))));
 
-              let currentDifference = Math.abs((((oddSmall * stake) - (oddBig * (proportion - stake)))));
-              if (currentDifference > bestDifference && bestDifference != null) {
-                let profitSmall = ((oddSmall * lastStake) - proportion).toFixed(2);
-                let profitBig = ((oddBig * (proportion - lastStake)) - proportion).toFixed(2);
-                x.stake_small = `${oddSmall} * ${lastStake} = ${profitSmall}`;
-                x.stake_big = `${oddBig} * ${proportion - lastStake} = ${profitBig}`;
-                break;
-              }
-              bestDifference = currentDifference;
-              lastStake = stake;
+              let profitSmall = ((oddSmall * stake) - proportion).toFixed(2);
+              let profitBig = ((oddBig * (proportion - stake)) - proportion).toFixed(2);
+              stake_small = { odd: oddSmall, stake: stake, profit: profitSmall };
+              stake_big = { odd: oddBig, stake: proportion - stake, profit: profitBig };
+              possibilities.push({ stake_small: stake_small, stake_big: stake_big, difference: difference });
             }
+          }
+          if (possibilities.length > 0) {
+            x.possibilities = common.sortList(possibilities, 'difference');
+            x.stake_small = x.possibilities[0].stake_small;
+            x.stake_big = x.possibilities[0].stake_big;
           }
         }
       });
@@ -107,17 +103,6 @@ class OddsSure extends Component {
       this.setState({ itemsAll: items, bets });
       setTimeout(() => { this.filterImportant() }, 1);
     });
-    common.getData('data/dataloading.php?data=data_loading').then((data_loading) => {
-      this.barList(false, data_loading);
-      this.setState({ data_loading })
-    });
-    common.getData('data/odds.php?data=dates').then(
-      (dates) => {
-
-        dates.push(...this.state.datesPlus);
-        this.setState({ dates })
-      }
-    );
   }
   componentDidUpdate() {
   }
@@ -504,14 +489,37 @@ class OddsSure extends Component {
                   </small></td>
                   <td>{x.league_name}</td>
                   <td>{x.event_name}</td>
-                  <td>{x.odd_name_365}</td>
-                  <td>{x.odd_name_espnet}</td>
-                  <td>{common.odd365(x.odd_365)}</td>
-                  <td>{common.odd365(x.odd_espnet)}</td>
+                  <td >{x.odd_name_365}</td>
+                  <td >{x.odd_name_espnet}</td>
+                  <td className={x.home_away_365 ? 'odd-atificial' : ''} title={x.home_away_365 ? x.home_away_365 + ' ' + x.draw_365 + ' Original: ' + x.odd_original_365 : ''}>{common.odd365(x.odd_365)}</td>
+                  <td className={x.home_away_espnet ? 'odd-atificial' : ''} title={x.home_away_espnet ? x.home_away_espnet + ' ' + x.draw_espnet+ ' Original: ' + x.odd_original_espnet : ''}>{common.odd365(x.odd_espnet)}</td>
                   <td>{common.odd365(x.odd_365_prob)}</td>
                   <td>{common.odd365(x.odd_espnet_prob)}</td>
-                  <td className={x.total < 100 ? 'bg-green' : ''}>{common.odd365(x.total)}</td>
-                  <td><div>{x.stake_small}</div><div>{x.stake_big}</div></td>
+                  <td className={x.total > 0 && x.total < 100 ? 'bg-green' : ''}>{common.odd365(x.total)}</td>
+                  <td>
+                    {x.possibilities && <div className="row no-gutters">
+                      <div className="col-4">{x.stake_small.odd}</div>
+                      <div className="col-4">{x.stake_small.stake}</div>
+                      <div className="col-4">{x.stake_small.profit}</div>
+                      <div className="col-4">{x.stake_big.odd}</div>
+                      <div className="col-4">{x.stake_big.stake}</div>
+                      <div className="col-4">{x.stake_big.profit}</div>
+                      <div className="w-100">
+                        <a className="text-success pointer" hidden={x.visible} onClick={() => { x.visible = true; this.setState({ items: this.state.items }) }} >Mostrar Todas</a>
+                        <a className="text-warning pointer" hidden={!x.visible} onClick={() => { x.visible = false; this.setState({ items: this.state.items }) }} >Ocultar Todas</a>
+                      </div>
+                      <div className="posibilities col-12" >
+                        {x.visible && x.possibilities.map((p, i) => <div className="posibilities-item row no-gutters" key={i} >
+                          <div className="col-4">{p.stake_small.odd}</div>
+                          <div className="col-4">{p.stake_small.stake}</div>
+                          <div className="col-4">{p.stake_small.profit}</div>
+                          <div className="col-4">{p.stake_big.odd}</div>
+                          <div className="col-4">{p.stake_big.stake}</div>
+                          <div className="col-4">{p.stake_big.profit}</div>
+                        </div>)}
+                      </div>
+                    </div>}
+                  </td>
                 </tr>)}
               </tbody>
             </table>

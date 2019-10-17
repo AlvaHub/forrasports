@@ -64,7 +64,7 @@
 /* TABLE ESPNET */
 .table-odds-espnet {border-collapse: collapse}
 .table-odds-espnet th{padding:0.25rem;color:rgb(221, 221, 221);background-color: rgb(46, 51, 61);}
-.table-odds-espnet td{background-color: rgb(33, 41, 54);padding:0.25rem;color:rgb(221, 221, 221);border:1px solid rgb(36, 46, 59)}
-.table-odds-espnet tr:hover td{background-color: rgb(36, 45, 61);cursor: pointer;}
+.table-odds-espnet td{background-color: rgb(14, 18, 24);padding:0.25rem;color:rgb(221, 221, 221);border:1px solid rgb(27, 35, 46)}
+.table-odds-espnet tr:hover td{background-color: rgb(22, 28, 37);cursor: pointer;}
 .table-odds-espnet tr:nth-child(odd):not(:hover) td{background-color: rgb(23, 30, 39)}
 .table-odds-espnet>tbody::-webkit-scrollbar{background-color: rgb(33, 41, 54)}

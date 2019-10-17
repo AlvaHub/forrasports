@@ -43,6 +43,13 @@ export function tableSort(key, obj) {
         this.setState({ [obj]: data, sortField: (key === this.state.sortField ? '' : key) });
     }
 }
+export function sortList(list, key) {
+    return list.sort((a, b) => {
+        if (a[key] < b[key]) return - 1;
+        if (a[key] > b[key]) return 1;
+        return 0;
+    });
+}
 export function tableSortNumber(key, obj) {
 
     if (typeof (obj) !== 'string') {

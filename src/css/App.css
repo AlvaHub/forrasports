@@ -83,6 +83,7 @@ body:before {
 .no-overflow{overflow: hidden;}
 .no-focus:focus{outline-style: none !important;}
 .no-break{white-space: nowrap}
+.odd-atificial{font-weight: bold;color:#ffbb33 !important;cursor: pointer;}
 @media(max-width:576px){
   .logo-left{display: none}
 }
