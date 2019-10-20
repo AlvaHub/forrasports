@@ -81,10 +81,13 @@ export function hideMore() {
     document.body.removeEventListener('click', hideMore);
 }
 export function setUser(user) {
-    localStorage.setItem("user_forrasports", JSON.stringify(user))
+    sessionStorage.setItem("user_forrasports", JSON.stringify(user))
 }
 export function getUser() {
-    let userJson = localStorage.getItem("user_forrasports");
+    let userJsonOld = localStorage.getItem("user_forrasports");
+    if (userJsonOld)
+        localStorage.removeItem('user_forrasports');
+    let userJson = sessionStorage.getItem("user_forrasports");
     if (!userJson)
         return null;
 

@@ -25,9 +25,12 @@ class Login extends Component {
         var that = this;
         common.postData('data/login.php?data=login', this.state.data).then(function (data) {
             that.props.hide();
-            if (data !== "0") {
-                common.setUser(data);
-                that.props.history.push('/');
+            if (data.length > 0) {
+                common.setUser(data[0]);
+                if (data[0].permission === '1')
+                    window.location.href = '/';
+                else
+                    window.location.href = '/odds-sure';
             }
             else
                 alert('Login Inválido!')

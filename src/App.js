@@ -73,9 +73,10 @@ class App extends Component {
 
     //Check if data loading is running and keep the loading bar updating 
     this.checkLoading();
-    this.globalInterval = setInterval(() => {
-      this.checkLoading();
-    }, 5000);
+    if (!this.globalInterval)
+      this.globalInterval = setInterval(() => {
+        this.checkLoading();
+      }, 5000);
   }
   componentWillUnmount() {
 
@@ -133,12 +134,12 @@ class App extends Component {
     common.postData('data/dataloading.php?data=set_user', dataInput).then(function (data) {
 
       if (data.message) {
-        this.loadingHide();
+        that.loadingHide();
         alert(data.message);
         return;
       }
-      that.loadData();
-
+      else
+        that.loadData();
     });
   }
   loadData = () => {
@@ -147,14 +148,16 @@ class App extends Component {
     document.getElementById('percent-number').innerHTML = '0%';
     this.setState({ isLoading: true, isError: false, loading: '' })
     common.getData('start.php').then((data) => {
-      
+
     }, (err) => { this.setState({ isLoading: false, isError: false }); console.log(err) });
   }
   nextLoadData(userId) {
+    if (!common.getUser())
+      return;
 
     if (common.getUser().id == userId && this.state.data_loading_interval !== "0") { // Means that loading is scheduled, so prepare to run the next one
       document.getElementById("btn_loading").setAttribute("disabled", "disabled");
-      
+
       if (this.timeoutLoading)
         clearTimeout(this.timeoutLoading);
       this.timeoutLoading = setTimeout(() => { this.loadData() }, Number(this.state.data_loading_interval) * 60 * 1000);
@@ -223,6 +226,7 @@ class App extends Component {
   }
   render() {
 
+    let permission = common.getUser() ? common.getUser().permission : '0';
     return (
       <BrowserRouter>
         <React.Fragment>
@@ -277,12 +281,15 @@ class App extends Component {
           {window.location.pathname === '/login' || <Menu show={this.loadingShow} hide={this.loadingHide} />}
           <div id="master" className="page p-1">
             <Route path="/login" render={() => <Login changeTitle={this.changeTitleHandler} show={this.loadingShow} hide={this.loadingHide} />} />
-            <Route path="/" exact render={() => { return common.getUser() && <Odds setChild={this.setChild} changeTitle={this.changeTitleHandler} show={this.loadingShow} hide={this.loadingHide} /> }} />
-            <Route path="/default" />
-            <Route path="/admin/user" render={() => <User changeTitle={this.changeTitleHandler} show={this.loadingShow} hide={this.loadingHide} />} />
-            <Route path="/admin/parameter" render={() => <Parameter changeTitle={this.changeTitleHandler} show={this.loadingShow} hide={this.loadingHide} />} />
-            <Route path="/odd-history" render={() => <OddHistory changeTitle={this.changeTitleHandler} show={this.loadingShow} hide={this.loadingHide} />} />
-            <Route path="/odds-espnet" render={() => <OddsEspnet setChild={this.setChild} changeTitle={this.changeTitleHandler} show={this.loadingShow} hide={this.loadingHide} />} />
+            {permission === '1' &&
+              <React.Fragment >
+                <Route path="/" exact render={() => { return common.getUser() && <Odds setChild={this.setChild} changeTitle={this.changeTitleHandler} show={this.loadingShow} hide={this.loadingHide} /> }} />
+                <Route path="/default" />
+                <Route path="/admin/user" render={() => <User changeTitle={this.changeTitleHandler} show={this.loadingShow} hide={this.loadingHide} />} />
+                <Route path="/admin/parameter" render={() => <Parameter changeTitle={this.changeTitleHandler} show={this.loadingShow} hide={this.loadingHide} />} />
+                <Route path="/odd-history" render={() => <OddHistory changeTitle={this.changeTitleHandler} show={this.loadingShow} hide={this.loadingHide} />} />
+                <Route path="/odds-espnet" render={() => <OddsEspnet setChild={this.setChild} changeTitle={this.changeTitleHandler} show={this.loadingShow} hide={this.loadingHide} />} />
+              </React.Fragment >}
             <Route path="/odds-sure" render={() => <OddsSure setChild={this.setChild} changeTitle={this.changeTitleHandler} show={this.loadingShow} hide={this.loadingHide} />} />
           </div>
           <div className={'loading ' + this.state.loading} ><img src={loadingImage} alt="" /></div>

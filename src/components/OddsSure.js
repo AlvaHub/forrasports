@@ -467,8 +467,8 @@ class OddsSure extends Component {
                   <th onClick={common.tableSort.bind(this, 'league_name')} >Liga</th>
                   <th onClick={common.tableSort.bind(this, 'event_name')} >Evento</th>
                   <th onClick={common.tableSort.bind(this, 'odd_name_365')} >Merc. A</th>
-                  <th onClick={common.tableSort.bind(this, 'odd_name_espnet')} >Merc. C</th>
                   <th onClick={common.tableSortNumber.bind(this, 'odd_365')} >A</th>
+                  <th onClick={common.tableSort.bind(this, 'odd_name_espnet')} >Merc. C</th>
                   <th onClick={common.tableSortNumber.bind(this, 'odd_espnet')} >C</th>
                   <th onClick={common.tableSortNumber.bind(this, 'odd_365_prob')} >A Prob</th>
                   <th onClick={common.tableSortNumber.bind(this, 'odd_espnet_prob')} >C Prob</th>
@@ -490,8 +490,8 @@ class OddsSure extends Component {
                   <td>{x.league_name}</td>
                   <td>{x.event_name}</td>
                   <td >{x.odd_name_365}</td>
-                  <td >{x.odd_name_espnet}</td>
                   <td className={x.home_away_365 ? 'odd-atificial' : ''} title={x.home_away_365 ? x.home_away_365 + ' ' + x.draw_365 + ' Original: ' + x.odd_original_365 : ''}>{common.odd365(x.odd_365)}</td>
+                  <td >{x.odd_name_espnet}</td>
                   <td className={x.home_away_espnet ? 'odd-atificial' : ''} title={x.home_away_espnet ? x.home_away_espnet + ' ' + x.draw_espnet+ ' Original: ' + x.odd_original_espnet : ''}>{common.odd365(x.odd_espnet)}</td>
                   <td>{common.odd365(x.odd_365_prob)}</td>
                   <td>{common.odd365(x.odd_espnet_prob)}</td>
