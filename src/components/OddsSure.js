@@ -15,7 +15,7 @@ class OddsSure extends Component {
   barList() {
     this.props.changeTitle({
       left: null,
-      center: <div className="pointer" onClick={this.bindList.bind(this)}  ><div className="hidden-xs">Odds Sure Bet</div></div>,
+      center: <div className="pointer" onClick={this.bindList.bind(this)}  ><div>Odds Sure Bet</div></div>,
       right: <i className="fas fa-filter  ml-2 text-dark font-md show-xs" onClick={this.showFilter.bind(this)}></i>
     });
   }

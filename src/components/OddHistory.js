@@ -52,8 +52,7 @@ class OddHistory extends Component {
     this.props.changeTitle({
       left: null, center: <div className="pointer" onClick={this.bindList.bind(this)}>Histórico</div>,
       right: <div>
-        <button className="btn btn-secondary btn-sm mr-3 btn-loading" onClick={this.getResults.bind(this)} >Atualizar</button>
-        <i className="fas fa-user mr-3 font-md pointer show-md" onClick={this.showBetUser.bind(this)} ></i>
+        <button className="btn btn-secondary btn-sm mr-3 btn-loading hidden-xs" onClick={this.getResults.bind(this)} ><i className="fas fa-redo-alt" ></i></button>
         <i className="fas fa-filter text-dark font-md show-md" onClick={this.showFilter.bind(this)}></i>
       </div>
     });
@@ -508,6 +507,9 @@ class OddHistory extends Component {
               <b>Stake: </b><b className="text-secondary">{common.formatNumber(this.state.items.filter(y => y.result !== "").length * this.state.proportion)}</b>
               <b className="ml-2">Return: </b>{common.formatNumber(this.state.bet_return, true)}
               <b className="ml-2"></b>{((this.state.bet_return / (this.state.items.filter(y => y.result !== "").length * this.state.proportion)) * 100).toFixed(2)}%
+            </div>
+            <div className="col-12 show-xs text-right" >
+              <button className="btn btn-secondary btn-sm mr-3 btn-loading" onClick={this.getResults.bind(this)} >Atualizar</button>
             </div>
           </div>
         </div>

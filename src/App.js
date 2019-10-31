@@ -14,6 +14,7 @@ import MenuIcon from './components/MenuIcon'
 import OddHistory from './components/OddHistory'
 import OddsEspnet from './components/OddsEspnet'
 import OddsSure from './components/OddsSure'
+import OddsHDA from './components/OddsHDA'
 import { formatDate } from 'react-day-picker/moment';
 import MyModal from './components/MyModal';
 import { BrowserRouter, Route } from 'react-router-dom'
@@ -55,8 +56,13 @@ class App extends Component {
   }
   changeTitleHandler = title => {
 
-    if (!title.left) title.left = window.location.pathname === '/login' || <MenuIcon />;
+    if (!title.left) title.left = window.location.pathname === '/login' || <button type="button" title="Menu" className="btn btn-sm" onClick={this.showMenu}  ><i className="fas fa-bars"></i></button>;
     this.setState({ title: title });
+  }
+  showMenu = () => {
+    document.getElementById('menu-more').style.transform = 'translateX(0)';
+    document.getElementById('menu-panel').style.display = 'block';
+
   }
   loadingShow = () => {
     this.setState({ loading: 'loading-show' });
@@ -93,7 +99,6 @@ class App extends Component {
   }
   checkLoading = () => {
 
-
     common.getData('data/dataloading.php?data=data_loading_percent').then((info) => {
 
       if (info.status_id === "SU") { //Success means data loading finished
@@ -124,7 +129,7 @@ class App extends Component {
           });
         }
       }
-    });
+    }, err => { console.log(err); });
 
   }
   loadDataClicked = () => {
@@ -249,9 +254,12 @@ class App extends Component {
           </MyModal>
           <div className="navigation-bar row no-gutters" >
             <div className="col-12 row no-gutters">
-              <div className="col text-left align-self-center" >{this.state.title.left}</div>
-              <div className="col-auto text-center align-self-center" >
+              <div className="col-auto col-sm text-left align-self-center" >{this.state.title.left}</div>
+              <div className="col-auto title align-self-center" >
                 {this.state.title.center}
+                {this.state.data_loading_info &&
+                  <div className="show-md date-loading" >{formatDate(this.state.data_loading_info.date_finish, "DD/MM/YY HH:mm:ss")} ({this.state.data_loading_info.duration} seg.)</div>
+                }
               </div>
               <div className="col text-right align-self-center">
                 <div style={{ display: 'flex' }} className="justify-content-end" >
@@ -264,7 +272,7 @@ class App extends Component {
                     </div>
                     <div className="data-loading-info" hidden={this.state.isLoading} >
                       {this.state.data_loading_info &&
-                        <div className="block-inline hidden-xs mr-2" >{formatDate(this.state.data_loading_info.date_finish, "DD/MM/YY HH:mm:ss")} ({this.state.data_loading_info.duration} seg.)</div>
+                        <div className="block-inline hidden-md mr-2" >{formatDate(this.state.data_loading_info.date_finish, "DD/MM/YY HH:mm:ss")} ({this.state.data_loading_info.duration} seg.)</div>
                       }
                       <i className="mr-1 fas fa-cog text-dark" style={{ fontSize: 16, position: 'relative', top: '3px' }} onClick={this.customFilterOpen.bind(this)}></i>
                       <i className="mr-1 fas fa-times-circle text-danger" onClick={() => { alert(this.state.data_loading_info ? 'Houve um erro na última execução:\r\r' + this.state.data_loading_info.error_msg : '') }} title={this.state.data_loading_info ? this.state.data_loading_info.error_msg : ''} hidden={!this.state.isError} style={{ fontSize: 16, position: 'relative', top: '3px' }}></i>
@@ -278,6 +286,7 @@ class App extends Component {
               </div>
             </div>
           </div>
+
           {window.location.pathname === '/login' || <Menu show={this.loadingShow} hide={this.loadingHide} />}
           <div id="master" className="page p-1">
             <Route path="/login" render={() => <Login changeTitle={this.changeTitleHandler} show={this.loadingShow} hide={this.loadingHide} />} />
@@ -289,6 +298,7 @@ class App extends Component {
                 <Route path="/admin/parameter" render={() => <Parameter changeTitle={this.changeTitleHandler} show={this.loadingShow} hide={this.loadingHide} />} />
                 <Route path="/odd-history" render={() => <OddHistory changeTitle={this.changeTitleHandler} show={this.loadingShow} hide={this.loadingHide} />} />
                 <Route path="/odds-espnet" render={() => <OddsEspnet setChild={this.setChild} changeTitle={this.changeTitleHandler} show={this.loadingShow} hide={this.loadingHide} />} />
+                <Route path="/odds-hda" render={() => <OddsHDA setChild={this.setChild} changeTitle={this.changeTitleHandler} show={this.loadingShow} hide={this.loadingHide} />} />
               </React.Fragment >}
             <Route path="/odds-sure" render={() => <OddsSure setChild={this.setChild} changeTitle={this.changeTitleHandler} show={this.loadingShow} hide={this.loadingHide} />} />
           </div>

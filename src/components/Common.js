@@ -4,21 +4,21 @@ var lastScroll = 0;
 
 export var api_url = (window.location.hostname === 'localhost' ? 'http://api.betpoint:8001/betmix_web/' : 'https://forrasports.websiteseguro.com/api/');
 
-function scrollTop() {
+export function scrollTop() {
     lastScroll = window.scrollY;
     setTimeout(() => {
         window.scrollTo(0, 0);
     }, 1)
 }
-function scrollLast() {
+export function scrollLast() {
     setTimeout(() => {
         window.scrollTo(0, lastScroll);
     }, 1)
 }
-function getData(path) {
+export function getData(path) {
     return fetch(api_url + path).then(data => data.json());
 }
-function postData(path, dataInput) {
+export function postData(path, dataInput) {
     return fetch(api_url + path, {
         method: 'post', body: JSON.stringify(dataInput)
     }).then(data => data.json());
@@ -196,22 +196,66 @@ export function setTheme() {
     link.id = "theme-light";
     document.head.appendChild(link);
 }
-export function isNumberKey(e) {
-    return false;
-    var charCode = (e.which) ? e.which : e.keyCode
-    var value = e.target.value;
-    var dotcontains = value.indexOf(".") != -1;
-
-    if (dotcontains)
-        if (charCode == 46) return false;
-    if (charCode == 46) return true;
-    if (charCode > 31 && (charCode < 48 || charCode > 57))
-        return false;
-    return true;
-}
 export function odd365(num) {
     if (!num)
         return num;
     return num[num.length - 1] === "0" ? Number(num).toFixed(2) : Number(num);
 }
-export { scrollTop, scrollLast, getData, postData } 
+export function formatP365(value) {
+    if (!value)
+        return "";
+    var css = "";
+    if (value < 0.85)
+        css = "bg-green";
+    else if (value < 0.9)
+        css = "bg-yellow";
+    else if (value < 0.93)
+        css = "bg-red";
+
+    return css;
+
+}
+export function formatEV(value) {
+    var css = "";
+    if (value >= 5)
+        css = "bg-green text-white";
+    else if (value >= 3.5)
+        css = "bg-yellow text-white";
+    else if (value >= 2)
+        css = "bg-red text-white";
+
+    return css;
+
+}
+export function formatP365Light(value) {
+    var css = "";
+    if (value < 0.85)
+        css = "bg-success pl-1 rounded text-white";
+    else if (value < 0.9)
+        css = "bg-yellow pl-1 rounded text-white";
+    else if (value < 0.93)
+        css = "bg-red pl-1 rounded text-white";
+
+    return css;
+
+}
+export default class Filter {
+    static showFilter() {
+        var css = document.getElementById('filter').className;
+        css = css.indexOf('hidden-xs') > 0 ? 'filter' : 'filter hidden-xs';
+        document.getElementById('filter').className = css;
+    }
+    static hideFilter() {
+        document.getElementById('filter').className = 'filter hidden-xs';
+    }
+    static checkHideFilter = () => {
+        var css = document.getElementById('filter').className;
+        if (css.indexOf('hidden-xs') < 0)
+            document.getElementById('filter').className = 'filter hidden-xs';
+    }
+    static filterDate = (e) => {
+        this.setState({ [e.target.name]: e.target.value });
+        setTimeout(() => { this.bindList(); }, 1);
+    }
+}
+
