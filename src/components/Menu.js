@@ -23,21 +23,50 @@ class Menu extends Component {
     this.setState({ items });
 
   }
-  redirect = (item) => {
+  redirect = (menuItem, e) => {
 
-    let path = item.path;
-    if (document.location.pathname !== path)
-      this.props.history.push(path);
-    else {
-      this.props.history.push('/default');
-      setTimeout(() => {
-        this.props.history.push(path);
-      }, 1);
-    }
-    this.state.items.forEach(x => x.selected = false);
-    item.selected = true;
+    let item = e.target;
+    let itemHeight = item.clientHeight;
+    //Create Favorite Container
+    let favoriteContainer = document.createElement('div');
+    favoriteContainer.className = 'item-container';
+    favoriteContainer.style.height = '0px';
+    //Get Distance to Translate Item
+    let favorite = document.getElementById('favorite');
+    let favoriteBottom = favorite.getBoundingClientRect().bottom;
+    let itemTop = item.getBoundingClientRect().top;
+    let distance = itemTop - favoriteBottom;
+    //Translate
+    e.target.style.transform = 'translateY(-' + (distance + itemHeight) + 'px)';
+    //Add Favorite Container
+    favorite.appendChild(favoriteContainer);
+    //Item Container Set Height
+    let parent = item.parentNode;
+    parent.style.height = parent.clientHeight + 'px';
+    //Decrease Parent Container, Increase Favorite Container
+    setTimeout(() => {
+      parent.style.height = '0px';
+      favoriteContainer.style.height = itemHeight + 'px';
+    }, 1);
+    //Add Item do Favorite Container
+    setTimeout(() => {
+      item.style.transform = null;
+      favoriteContainer.append(item);
+    }, 500);
 
-    this.hideMenu();
+    // let path = item.path;
+    // if (document.location.pathname !== path)
+    //   this.props.history.push(path);
+    // else {
+    //   this.props.history.push('/default');
+    //   setTimeout(() => {
+    //     this.props.history.push(path);
+    //   }, 1);
+    // }
+    // this.state.items.forEach(x => x.selected = false);
+    // item.selected = true;
+
+    // this.hideMenu();
   }
   hideMenu = () => {
     document.getElementById('menu-more').style.transform = 'translateX(-100%)';
@@ -54,11 +83,16 @@ class Menu extends Component {
           <div className="logo-text">
             Forra Sports
           </div>
+          <div id="favorite" className="items" >
+
+          </div>
           <div className="items">
-            {items.map((x, i) => <div className={x.selected ? 'active' : ''} key={i} onClick={() => { this.redirect(x) }} >
-              <i className={x.icon}></i> {x.name}
+            {items.map((x, i) => <div className="item-container" key={i} >
+              <div className={x.selected ? 'item active' : 'item'} onClick={this.redirect.bind(this, x)} >
+                <i className={x.icon}></i> {x.name}
+              </div>
             </div>)}
-            <div onClick={() => { if (window.confirm('Deseja sair do sistema!')) { common.setUser(null); window.location.href = '/login'; } }} >
+            <div className="item" onClick={() => { if (window.confirm('Deseja sair do sistema!')) { common.setUser(null); window.location.href = '/login'; } }} >
               <i className="fas fa-sign-out-alt"></i> Sair
         </div>
           </div>
