@@ -6,11 +6,11 @@ class Menu extends Component {
 
   state = {
     items: [
-      { name: 'A B', path: '/', selected: true, permission: [1], icon: 'fas fa-cube' },
-      { name: 'A B C', path: '/odds-espnet', permission: [1], icon: 'fas fa-cube' },
-      { name: 'CEV', path: '/odds-hda', icon: 'fas fa-cube', permission: [1] },
-      { name: 'Odds Sure', path: '/odds-sure', freeAccess: true, icon: 'fas fa-cube' },
-      { name: 'Histórico', path: '/odd-history', permission: [1], icon: 'fas fa-list' },
+      { id: 1, name: 'A B', path: '/', selected: true, permission: [1], icon: 'fas fa-cube' },
+      { id: 2, name: 'A B C', path: '/odds-espnet', permission: [1], icon: 'fas fa-cube' },
+      { id: 3, name: 'CEV', path: '/odds-hda', icon: 'fas fa-cube', permission: [1] },
+      { id: 4, name: 'Odds Sure', path: '/odds-sure', freeAccess: true, icon: 'fas fa-cube' },
+      { id: 5, name: 'Histórico', path: '/odd-history', permission: [1], icon: 'fas fa-list' },
     ]
   }
   componentDidMount() {
@@ -23,9 +23,33 @@ class Menu extends Component {
     this.setState({ items });
 
   }
-  redirect = (menuItem, e) => {
+  redirect = (item, e) => {
 
-    let item = e.target;
+    let path = item.path;
+    if (document.location.pathname !== path)
+      this.props.history.push(path);
+    else {
+      this.props.history.push('/default');
+      setTimeout(() => {
+        this.props.history.push(path);
+      }, 1);
+    }
+    this.state.items.forEach(x => x.selected = false);
+    item.selected = true;
+
+    this.hideMenu();
+  }
+  setFavorite = (menuItem, e) => {
+
+    e.stopPropagation();
+
+    if (menuItem.favorite)
+      return this.setFavoriteRemove(menuItem, e);
+
+    menuItem.favorite = true;
+    this.setState(this.state.items);
+
+    let item = e.target.parentNode;
     let itemHeight = item.clientHeight;
     //Create Favorite Container
     let favoriteContainer = document.createElement('div');
@@ -37,7 +61,7 @@ class Menu extends Component {
     let itemTop = item.getBoundingClientRect().top;
     let distance = itemTop - favoriteBottom;
     //Translate
-    e.target.style.transform = 'translateY(-' + (distance + itemHeight) + 'px)';
+    item.style.transform = 'translateY(-' + (distance + itemHeight) + 'px)';
     //Add Favorite Container
     favorite.appendChild(favoriteContainer);
     //Item Container Set Height
@@ -53,20 +77,41 @@ class Menu extends Component {
       item.style.transform = null;
       favoriteContainer.append(item);
     }, 500);
+  }
+  setFavoriteRemove = (menuItem, e) => {
 
-    // let path = item.path;
-    // if (document.location.pathname !== path)
-    //   this.props.history.push(path);
-    // else {
-    //   this.props.history.push('/default');
-    //   setTimeout(() => {
-    //     this.props.history.push(path);
-    //   }, 1);
-    // }
-    // this.state.items.forEach(x => x.selected = false);
-    // item.selected = true;
+    console.log("here");
+    menuItem.favorite = false;
+    this.setState(this.state.items);
 
-    // this.hideMenu();
+    let item = e.target.parentNode;
+    let itemHeight = item.clientHeight;
+    //Create Favorite Container
+    // let favoriteContainer = document.createElement('div');
+    // favoriteContainer.className = 'item-container';
+    // favoriteContainer.style.height = '0px';
+    //Get Distance to Translate Item
+    let itemContainer = document.getElementById(menuItem.id);
+    let itemContainerTop = itemContainer.getBoundingClientRect().top;
+    let itemTop = item.getBoundingClientRect().bottom;
+    let distance = itemContainerTop - itemTop;
+    //Translate
+    item.style.transform = 'translateY(' + (distance) + 'px)';
+    //Add Favorite Container
+    //favorite.appendChild(favoriteContainer);
+    //Item Container Set Height
+    let parent = item.parentNode;
+    parent.style.height = parent.clientHeight + 'px';
+    //Decrease Parent Container, Increase Favorite Container
+    setTimeout(() => {
+      parent.style.height = '0px';
+      itemContainer.style.height = itemHeight + 'px';
+    }, 1);
+    //Add Item do Favorite Container
+    setTimeout(() => {
+      item.style.transform = null;
+      itemContainer.append(item);
+    }, 500);
   }
   hideMenu = () => {
     document.getElementById('menu-more').style.transform = 'translateX(-100%)';
@@ -87,9 +132,9 @@ class Menu extends Component {
 
           </div>
           <div className="items">
-            {items.map((x, i) => <div className="item-container" key={i} >
+            {items.map((x, i) => <div id={x.id} className="item-container" key={i} >
               <div className={x.selected ? 'item active' : 'item'} onClick={this.redirect.bind(this, x)} >
-                <i className={x.icon}></i> {x.name}
+                <i className={x.icon}></i> {x.name} <i onClick={this.setFavorite.bind(this, x)} className={x.favorite ? 'fas fa-star' : 'far fa-star'}></i>
               </div>
             </div>)}
             <div className="item" onClick={() => { if (window.confirm('Deseja sair do sistema!')) { common.setUser(null); window.location.href = '/login'; } }} >

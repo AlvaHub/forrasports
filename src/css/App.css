@@ -442,9 +442,10 @@ td.top{vertical-align: top}
 .menu-more{position:fixed;background-color: rgba(5, 5, 5, 0.959);z-index:1100;left:0;top:0;height:100vh;min-width:200px;transform: translateX(-100%);transition: transform 0.4s;}
 .menu-more .items2{border:1px solid red}
 .menu-more .items .item-container{transition: height 0.5s;}
-.menu-more .items .item{padding:0.5rem;border-bottom:1px solid rgb(44, 44, 44);cursor:pointer;transition: transform 0.5s;}
+.menu-more .items .item{padding:0.5rem;border-bottom:1px solid rgb(44, 44, 44);cursor:pointer;transition: transform 0.5s;position:relative}
 .menu-more .items .item:hover{color:orange}
 .menu-more .items .item.active{color:orange}
+.menu-more .items .item .fa-star{position: absolute;top:11px;right:10px}
 
 @keyframes a_menu_come{
   from{transform:translateY(100%)}
