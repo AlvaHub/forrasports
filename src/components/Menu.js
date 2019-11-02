@@ -80,7 +80,6 @@ class Menu extends Component {
   }
   setFavoriteRemove = (menuItem, e) => {
 
-    console.log("here");
     menuItem.favorite = false;
     this.setState(this.state.items);
 
