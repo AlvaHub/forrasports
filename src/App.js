@@ -46,7 +46,7 @@ class App extends Component {
     // });
   }
   state = {
-    title: { left: '', center: "Natan Sports", right: '' },
+    title: { left: '', center: "", right: '' },
     loading: '',
     show: false,
     apple: 1,
@@ -55,6 +55,12 @@ class App extends Component {
     runningCount: 0
   }
   changeTitleHandler = title => {
+    if (common.isUserInactive()) {
+      title.left = common.getUser() && <div className="pl-2 pointer" onClick={() => { if (window.confirm('Deseja sair do sistema!')) { common.setUser(null); window.location.href = '/login'; } }} ><i className="fas fa-sign-out-alt"></i> Sair</div>;
+      this.setState({ title: title });
+      return;
+    }
+
 
     if (!title.left) title.left = window.location.pathname === '/login' || <button type="button" title="Menu" className="btn btn-sm" onClick={this.showMenu}  ><i className="fas fa-bars"></i></button>;
     this.setState({ title: title });
@@ -76,6 +82,9 @@ class App extends Component {
     for (let index = 1; index < 31; index++)
       minutes.push(index);
     this.setState({ minutes });
+
+    if (common.isUserInactive())
+      return;
 
     //Check if data loading is running and keep the loading bar updating 
     this.checkLoading();
@@ -133,7 +142,17 @@ class App extends Component {
 
   }
   loadDataClicked = () => {
+
     let that = this;
+    this.loadingShow();
+
+    if (common.isUserInactive()) {
+      setTimeout(() => {
+        alert('Não foi possivel obter os dados do Bet365!')
+        that.loadingHide();
+      }, 5000);
+      return;
+    }
     this.loadingShow();
     let dataInput = { user_id: common.getUser().id, interval: this.state.data_loading_interval };
     common.postData('data/dataloading.php?data=set_user', dataInput).then(function (data) {
@@ -198,6 +217,7 @@ class App extends Component {
     });
   }
   customFilterOpen = () => {
+
     let that = this;
     common.getData('data/dataloading.php?data=check_loading&user_id=' + common.getUser().id).then(function (data) {
       if (data.message) {
@@ -257,7 +277,7 @@ class App extends Component {
               <div className="col-auto col-sm text-left align-self-center" >{this.state.title.left}</div>
               <div className="col-auto title align-self-center" >
                 {this.state.title.center}
-                {this.state.data_loading_info &&
+                {this.state.data_loading_info && common.getUser() &&
                   <div className="show-md date-loading" >{formatDate(this.state.data_loading_info.date_finish, "DD/MM/YY HH:mm:ss")} ({this.state.data_loading_info.duration} seg.)</div>
                 }
               </div>
@@ -274,7 +294,7 @@ class App extends Component {
                       {this.state.data_loading_info &&
                         <div className="block-inline hidden-md mr-2" >{formatDate(this.state.data_loading_info.date_finish, "DD/MM/YY HH:mm:ss")} ({this.state.data_loading_info.duration} seg.)</div>
                       }
-                      <i className="mr-1 fas fa-cog text-dark" style={{ fontSize: 16, position: 'relative', top: '3px' }} onClick={this.customFilterOpen.bind(this)}></i>
+                      <i className="mr-1 fas fa-cog text-dark" hidden={common.isUserInactive()} style={{ fontSize: 16, position: 'relative', top: '3px' }} onClick={this.customFilterOpen.bind(this)}></i>
                       <i className="mr-1 fas fa-times-circle text-danger" onClick={() => { alert(this.state.data_loading_info ? 'Houve um erro na última execução:\r\r' + this.state.data_loading_info.error_msg : '') }} title={this.state.data_loading_info ? this.state.data_loading_info.error_msg : ''} hidden={!this.state.isError} style={{ fontSize: 16, position: 'relative', top: '3px' }}></i>
                       <button type="button" id="btn_loading" className={'mr-2 btn btn-sm btn-danger btn-loading'} onClick={this.loadDataClicked.bind(this)}>Atualizar</button>
                     </div>
@@ -286,13 +306,11 @@ class App extends Component {
               </div>
             </div>
           </div>
-
           {window.location.pathname === '/login' || <Menu show={this.loadingShow} hide={this.loadingHide} />}
           <div id="master" className="page p-1">
             <Route path="/login" render={() => <Login changeTitle={this.changeTitleHandler} show={this.loadingShow} hide={this.loadingHide} />} />
             {permission === '1' &&
               <React.Fragment >
-                <Route path="/" exact render={() => { return common.getUser() && <Odds setChild={this.setChild} changeTitle={this.changeTitleHandler} show={this.loadingShow} hide={this.loadingHide} /> }} />
                 <Route path="/default" />
                 <Route path="/admin/user" render={() => <User changeTitle={this.changeTitleHandler} show={this.loadingShow} hide={this.loadingHide} />} />
                 <Route path="/admin/parameter" render={() => <Parameter changeTitle={this.changeTitleHandler} show={this.loadingShow} hide={this.loadingHide} />} />
@@ -300,6 +318,9 @@ class App extends Component {
                 <Route path="/odds-espnet" render={() => <OddsEspnet setChild={this.setChild} changeTitle={this.changeTitleHandler} show={this.loadingShow} hide={this.loadingHide} />} />
                 <Route path="/odds-hda" render={() => <OddsHDA setChild={this.setChild} changeTitle={this.changeTitleHandler} show={this.loadingShow} hide={this.loadingHide} />} />
               </React.Fragment >}
+            {(permission === '1' || permission === '2') &&
+              <Route path="/" exact render={() => { return common.getUser() && <Odds setChild={this.setChild} changeTitle={this.changeTitleHandler} show={this.loadingShow} hide={this.loadingHide} /> }} />
+            }
             <Route path="/odds-sure" render={() => <OddsSure setChild={this.setChild} changeTitle={this.changeTitleHandler} show={this.loadingShow} hide={this.loadingHide} />} />
           </div>
           <div className={'loading ' + this.state.loading} ><img src={loadingImage} alt="" /></div>

@@ -139,7 +139,7 @@ class OddsHDA extends Component {
                   <td>{x.odd_home}</td>
                   <td>{x.odd_draw}</td>
                   <td>{x.odd_away}</td>
-                  <td>{x.total}</td>
+                  <td className={Number(x.total) < 1.03 ? 'bg-green text-white' : ''}>{x.total}</td>
                   <td>{x.bet_home}</td>
                   <td>{x.bet_draw}</td>
                   <td>{x.bet_away}</td>

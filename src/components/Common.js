@@ -94,6 +94,9 @@ export function getUser() {
     let user = JSON.parse(userJson);
     return user;
 }
+export function isUserInactive(){
+   return !getUser() || getUser().id == 2;
+}
 Date.prototype.addDays = function (days) {
     var date = new Date(this.valueOf());
     date.setDate(date.getDate() + days);

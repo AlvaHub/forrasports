@@ -438,11 +438,11 @@ td.top{vertical-align: top}
   .navigation-bar .title{text-align: left;padding-left: 0.5rem;}
 }
 .menu-panel{position: fixed;;left:0;top:0;width:100%;height:100vh;z-index:1000;display:none}
-.menu-more .logo-text{font-size: 20px;font-family: impact;padding:0.2rem;text-align: center;padding-top:0.5rem}
+.menu-more .logo-text{font-size: 20px;font-family: impact;padding:0.2rem;text-align: center;padding-top:0.8rem}
 .menu-more{position:fixed;background-color: rgba(5, 5, 5, 0.959);z-index:1100;left:0;top:0;height:100vh;min-width:200px;transform: translateX(-100%);transition: transform 0.4s;}
-.menu-more .items2{border:1px solid red}
+.menu-more .items{margin-top: 0.7rem;}
 .menu-more .items .item-container{transition: height 0.5s;}
-.menu-more .items .item{padding:0.5rem;border-bottom:1px solid rgb(44, 44, 44);cursor:pointer;transition: transform 0.5s;position:relative}
+.menu-more .items .item{padding:0.5rem;margin:0 0.5rem 0 0.5rem;border-bottom:1px solid rgb(44, 44, 44);cursor:pointer;transition: transform 0.5s;position:relative}
 .menu-more .items .item:hover{color:orange}
 .menu-more .items .item.active{color:orange}
 .menu-more .items .item .fa-star{position: absolute;top:11px;right:10px}

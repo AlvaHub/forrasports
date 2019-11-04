@@ -27,10 +27,10 @@ class Login extends Component {
             that.props.hide();
             if (data.length > 0) {
                 common.setUser(data[0]);
-                if (data[0].permission === '1')
-                    window.location.href = '/';
-                else
+                if (data[0].permission === '3')
                     window.location.href = '/odds-sure';
+                else
+                    window.location.href = '/';
             }
             else
                 alert('Login Inválido!')
@@ -48,7 +48,7 @@ class Login extends Component {
     }
     render() {
         return (
-            <div className="row login">
+            <div className="row no-gutters login">
                 <div className="col-12" >
                     <div className="mb-3 text-center mt-5 text-white fade-in" id="title">
                         <div className="logo-text"> <b>Forra Sports</b> </div>

@@ -133,7 +133,7 @@ class Menu extends Component {
           <div className="items">
             {items.map((x, i) => <div id={x.id} className="item-container" key={i} >
               <div className={x.selected ? 'item active' : 'item'} onClick={this.redirect.bind(this, x)} >
-                <i className={x.icon}></i> {x.name} <i onClick={this.setFavorite.bind(this, x)} className={x.favorite ? 'fas fa-star' : 'far fa-star'}></i>
+                <i className={x.icon}></i> {x.name} <i hidden={true} onClick={this.setFavorite.bind(this, x)} className={x.favorite ? 'fas fa-star' : 'far fa-star'}></i>
               </div>
             </div>)}
             <div className="item" onClick={() => { if (window.confirm('Deseja sair do sistema!')) { common.setUser(null); window.location.href = '/login'; } }} >

@@ -37,6 +37,10 @@ class Odds extends Component {
 
     //BIND LIST
     this.barList();
+
+    if (common.isUserInactive())
+      return;
+
     common.getData('data/odds.php?data=dates').then(
       (dates) => {
         dates.push(...this.state.datesPlus);
