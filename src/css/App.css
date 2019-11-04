@@ -121,7 +121,7 @@ input[type='text'],input[type='number'],select,textarea {  font-size: 16px;}
   .hidden-md{display:none}
   }
   @media(max-width:768px){
-  .show-md{display:none}
+  .show-md{display:none !important}
   }
   
 

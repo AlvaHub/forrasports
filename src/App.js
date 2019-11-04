@@ -278,7 +278,7 @@ class App extends Component {
               <div className="col-auto title align-self-center" >
                 {this.state.title.center}
                 {this.state.data_loading_info && common.getUser() &&
-                  <div className="show-md date-loading" >{formatDate(this.state.data_loading_info.date_finish, "DD/MM/YY HH:mm:ss")} ({this.state.data_loading_info.duration} seg.)</div>
+                  <div className="hidden-md date-loading" >{formatDate(this.state.data_loading_info.date_finish, "DD/MM/YY HH:mm:ss")} ({this.state.data_loading_info.duration} seg.)</div>
                 }
               </div>
               <div className="col text-right align-self-center  no-overflow ml-2">
@@ -292,7 +292,7 @@ class App extends Component {
                     </div>
                     <div className="data-loading-info" hidden={this.state.isLoading} >
                       {this.state.data_loading_info &&
-                        <div className="block-inline hidden-md mr-2" >{formatDate(this.state.data_loading_info.date_finish, "DD/MM/YY HH:mm:ss")} ({this.state.data_loading_info.duration} seg.)</div>
+                        <div className="block-inline show-md mr-2" >{formatDate(this.state.data_loading_info.date_finish, "DD/MM/YY HH:mm:ss")} ({this.state.data_loading_info.duration} seg.)</div>
                       }
                       <i className="mr-1 fas fa-cog text-dark" hidden={common.isUserInactive()} style={{ fontSize: 16, position: 'relative', top: '3px' }} onClick={this.customFilterOpen.bind(this)}></i>
                       <i className="mr-1 fas fa-times-circle text-danger" onClick={() => { alert(this.state.data_loading_info ? 'Houve um erro na última execução:\r\r' + this.state.data_loading_info.error_msg : '') }} title={this.state.data_loading_info ? this.state.data_loading_info.error_msg : ''} hidden={!this.state.isError} style={{ fontSize: 16, position: 'relative', top: '3px' }}></i>
