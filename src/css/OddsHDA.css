@@ -1,35 +1,35 @@
-.table-main{min-width: 1200px;overflow-x: auto }
-.table-main.table-scroll>tbody{max-height: calc(var(--window)  - 125px)}
+.table-hda{min-width: 1300px}
+.table-hda.table-scroll>tbody{max-height: calc(var(--window)  - 126px)}
 
 /* Table Colors */
-.table-main {border-collapse: collapse}
-.table-main th{padding:0.25rem;color:rgb(221, 221, 221);background-color: rgb(54, 54, 54);}
-.table-main td{background-color: rgb(26, 26, 26);padding:0.25rem;color:rgb(221, 221, 221);border:1px solid rgb(27, 27, 27)}
-.table-main tr:nth-child(odd) td{background-color: rgb(17, 17, 17)}
-.table-main>tbody::-webkit-scrollbar{background-color: rgb(29, 29, 29)}
+.table-hda {border-collapse: collapse}
+.table-hda th{padding:0.25rem;color:rgb(221, 221, 221);background-color: rgb(54, 54, 54);}
+.table-hda td{background-color: rgb(26, 26, 26);padding:0.25rem;color:rgb(221, 221, 221);border:1px solid rgb(27, 27, 27)}
+.table-hda tr:nth-child(odd) td{background-color: rgb(17, 17, 17)}
+.table-hda>tbody::-webkit-scrollbar{background-color: rgb(29, 29, 29)}
 /* Scroll  */
-.table-main.table-scroll>tbody::-webkit-scrollbar{display: inherit}
-.table-main.table-scroll>tbody::-webkit-scrollbar-thumb{background-color:gray}
+.table-hda.table-scroll>tbody::-webkit-scrollbar{display: inherit}
+.table-hda.table-scroll>tbody::-webkit-scrollbar-thumb{background-color:gray}
 .table-bets.table-scroll>tbody::-webkit-scrollbar{display: inherit}
 .table-bets.table-scroll>tbody::-webkit-scrollbar-thumb{background-color:rgb(161, 161, 161)}
 .table-bets.table-scroll>tbody::-webkit-scrollbar-track{background-color:rgb(216, 216, 216)}
 
 @media(max-width:576px){
-  .table-main.table-scroll>tbody{max-height: calc(var(--window)  - 80px);}
-  .table-main.table-scroll>tbody::-webkit-scrollbar{display: none}
+  .table-hda.table-scroll>tbody{max-height: calc(var(--window)  - 80px);}
+  .table-hda.table-scroll>tbody::-webkit-scrollbar{display: none}
 }
-.table-main tbody td:nth-child(1), .table-main thead th:nth-child(1){width: 3%}
-.table-main tbody td:nth-child(2), .table-main thead th:nth-child(2){width: 6%}
-.table-main tbody td:nth-child(3), .table-main thead th:nth-child(3){width: 5%}
-.table-main tbody td:nth-child(4), .table-main thead th:nth-child(4){width: 12%}
-.table-main tbody td:nth-child(5), .table-main thead th:nth-child(5){width: 12%}
-.table-main tbody td:nth-child(6), .table-main thead th:nth-child(6){width: 5%}
-.table-main tbody td:nth-child(7), .table-main thead th:nth-child(7){width: 5%}
-.table-main tbody td:nth-child(8), .table-main thead th:nth-child(8){width: 5%}
-.table-main tbody td:nth-child(9), .table-main thead th:nth-child(9){width: 5%}
-.table-main tbody td:nth-child(10), .table-main thead th:nth-child(10){width: 5%}
-.table-main tbody td:nth-child(11), .table-main thead th:nth-child(11){width: 5%}
-.table-main tbody td:nth-child(12), .table-main thead th:nth-child(12){width: 5%}
+.table-hda tbody td:nth-child(1), .table-hda thead th:nth-child(1){width: 3%}
+.table-hda tbody td:nth-child(2), .table-hda thead th:nth-child(2){width: 6%}
+.table-hda tbody td:nth-child(3), .table-hda thead th:nth-child(3){width: 5%}
+.table-hda tbody td:nth-child(4), .table-hda thead th:nth-child(4){width: 12%}
+.table-hda tbody td:nth-child(5), .table-hda thead th:nth-child(5){width: 12%}
+.table-hda tbody td:nth-child(6), .table-hda thead th:nth-child(6){width: 5%}
+.table-hda tbody td:nth-child(7), .table-hda thead th:nth-child(7){width: 5%}
+.table-hda tbody td:nth-child(8), .table-hda thead th:nth-child(8){width: 5%}
+.table-hda tbody td:nth-child(9), .table-hda thead th:nth-child(9){width: 5%}
+.table-hda tbody td:nth-child(10), .table-hda thead th:nth-child(10){width: 5%}
+.table-hda tbody td:nth-child(11), .table-hda thead th:nth-child(11){width: 5%}
+.table-hda tbody td:nth-child(12), .table-hda thead th:nth-child(12){width: 5%}
 
 
 

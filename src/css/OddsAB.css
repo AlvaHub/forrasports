@@ -1,0 +1,89 @@
+/* ODDS */
+.table-bets, .table-odds{min-width: 1100px; }
+.table-odds.table-scroll>tbody{max-height: calc(var(--window)  - 130px)}
+
+.table-odds.table-scroll>tbody::-webkit-scrollbar{display: inherit}
+.table-odds.table-scroll>tbody::-webkit-scrollbar-thumb{background-color:gray}
+.table-bets.table-scroll>tbody::-webkit-scrollbar{display: inherit}
+.table-bets.table-scroll>tbody::-webkit-scrollbar-thumb{background-color:rgb(161, 161, 161)}
+.table-bets.table-scroll>tbody::-webkit-scrollbar-track{background-color:rgb(216, 216, 216)}
+@media(max-width:576px){
+  .div-odds,.table-bets{min-width:auto;overflow-x:auto}
+  .div-odds table{min-width:800px}
+  .table-odds.table-scroll>tbody{max-height: calc(var(--window)  - 85px);}
+  .table-odds.table-scroll>tbody::-webkit-scrollbar{display: none}
+  .btn-loading{padding:2px;font-size:8pt;display:inline}
+}
+@media(min-width:577px){
+.table-odds tbody td:nth-child(1), .table-odds thead th:nth-child(1){width: 5%}
+.table-odds tbody td:nth-child(2), .table-odds thead th:nth-child(2){width: 6.5%}
+.table-odds tbody td:nth-child(3), .table-odds thead th:nth-child(3){width: 3.5%}
+.table-odds tbody td:nth-child(4), .table-odds thead th:nth-child(4){width: 19%}
+.table-odds tbody td:nth-child(5), .table-odds thead th:nth-child(5){width: 20%}
+.table-odds tbody td:nth-child(6), .table-odds thead th:nth-child(6){width: 12%}
+.table-odds tbody td:nth-child(7), .table-odds thead th:nth-child(7){width: 8%}
+.table-odds tbody td:nth-child(8), .table-odds thead th:nth-child(8){width: 8%}
+.table-odds tbody td:nth-child(9), .table-odds thead th:nth-child(9){width: 8%}
+.table-odds tbody td:nth-child(10), .table-odds thead th:nth-child(10){width: 8%}
+}
+
+@media(max-width:576px){
+  .table-odds tbody td:nth-child(1), .table-odds thead th:nth-child(1){width: 5%}
+  .table-odds tbody td:nth-child(2), .table-odds thead th:nth-child(2){width: 6%}
+  .table-odds tbody td:nth-child(3), .table-odds thead th:nth-child(3){width: 6%}
+  .table-odds tbody td:nth-child(4), .table-odds thead th:nth-child(4){width: 20%}
+  .table-odds tbody td:nth-child(5), .table-odds thead th:nth-child(5){width: 20%}
+  .table-odds tbody td:nth-child(6), .table-odds thead th:nth-child(6){width: 12%}
+  .table-odds tbody td:nth-child(7), .table-odds thead th:nth-child(7){width: 7%}
+  .table-odds tbody td:nth-child(8), .table-odds thead th:nth-child(8){width: 7%}
+  .table-odds tbody td:nth-child(9), .table-odds thead th:nth-child(9){width: 7%}
+  .table-odds tbody td:nth-child(10), .table-odds thead th:nth-child(10){width: 8%}
+}
+ /* table bets */
+ @media(min-width:577px){
+
+  .table-bets tbody td:nth-child(1), .table-bets thead th:nth-child(1){width: 5%}
+  .table-bets tbody td:nth-child(2), .table-bets thead th:nth-child(2){width: 6.5%}
+  .table-bets tbody td:nth-child(3), .table-bets thead th:nth-child(3){width: 3.5%}
+  .table-bets tbody td:nth-child(4), .table-bets thead th:nth-child(4){width: 19%}
+  .table-bets tbody td:nth-child(5), .table-bets thead th:nth-child(5){width: 20%}
+  .table-bets tbody td:nth-child(6), .table-bets thead th:nth-child(6){width: 12%}
+  .table-bets tbody td:nth-child(7), .table-bets thead th:nth-child(7){width: 8%}
+  .table-bets tbody td:nth-child(8), .table-bets thead th:nth-child(8){width: 8%}
+  .table-bets tbody td:nth-child(9), .table-bets thead th:nth-child(9){width: 8%}
+  .table-bets tbody td:nth-child(10), .table-bets thead th:nth-child(10){width: 8%}
+
+
+ }
+ @media(max-width:576px){
+
+  .table-bets tbody td:nth-child(1), .table-bets thead th:nth-child(1){width: 5%}
+  .table-bets tbody td:nth-child(2), .table-bets thead th:nth-child(2){width: 6.5%}
+  .table-bets tbody td:nth-child(3), .table-bets thead th:nth-child(3){width: 3.5%}
+  .table-bets tbody td:nth-child(4), .table-bets thead th:nth-child(4){width: 19%}
+  .table-bets tbody td:nth-child(5), .table-bets thead th:nth-child(5){width: 20%}
+  .table-bets tbody td:nth-child(6), .table-bets thead th:nth-child(6){width: 12%}
+  .table-bets tbody td:nth-child(7), .table-bets thead th:nth-child(7){width: 8%}
+  .table-bets tbody td:nth-child(8), .table-bets thead th:nth-child(8){width: 8%}
+  .table-bets tbody td:nth-child(9), .table-bets thead th:nth-child(9){width: 8%}
+  .table-bets tbody td:nth-child(10), .table-bets thead th:nth-child(10){width: 8%}
+  }
+.div-table-bets{position:fixed;bottom:0px;width:100%;left:0;padding:4px;transform: translateY(100%)}
+.div-table-bets.show{animation: a_table_bets 0.5s forwards;}
+.div-table-bets.hide{animation: a_table_bets_hidden 0.5s forwards;}
+@keyframes a_table_bets{
+  0%{transform: translateY(100%);}
+  100%{transform: translateY(0%);}
+}
+@keyframes a_table_bets_hidden{
+  0%{transform: translateY(0%)}
+  100%{transform: translateY(100%);}
+}
+
+.table-bets.table-scroll>tbody{max-height:calc((var(--window) / 2.2))}
+.table-bets tbody tr td{background-color: rgb(230, 230, 230);color:rgb(36, 36, 36);border:1px solid rgb(216, 216, 216);cursor: pointer;}
+.table-bets thead th{background-color: rgb(53, 53, 53);color:rgb(235, 235, 235);border:1px solid rgb(51, 51, 51)}
+.table-bets tbody tr:nth-of-type(even) td {
+  background-color: rgb(255, 255, 255);color:rgb(36, 36, 36);
+} 
+

@@ -5,13 +5,7 @@ import * as common from './Common';
 class Menu extends Component {
 
   state = {
-    items: [
-      { id: 1, name: 'A B', path: '/', selected: true, permission: [1], icon: 'fas fa-cube' },
-      { id: 2, name: 'A B C', path: '/odds-espnet', permission: [1], icon: 'fas fa-cube' },
-      { id: 3, name: 'CEV', path: '/odds-hda', icon: 'fas fa-cube', permission: [1] },
-      { id: 4, name: 'Odds Sure', path: '/odds-sure', freeAccess: true, icon: 'fas fa-cube' },
-      { id: 5, name: 'Histórico', path: '/odd-history', permission: [1], icon: 'fas fa-list' },
-    ]
+    items: this.props.items
   }
   componentDidMount() {
     let items = this.state.items;

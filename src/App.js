@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css'
 import './css/App.css';
-import './css/OddsEspnet.css';
-import './css/OddsSure.css';
+import './css/Table.css';
 import Menu from './components/Menu';
 import Odds from './components/Odds';
 import Login from './components/Login';
@@ -52,7 +51,14 @@ class App extends Component {
     apple: 1,
     data_loading_interval: '0',
     minutes: [],
-    runningCount: 0
+    runningCount: 0,
+    items: [
+      { id: 1, name: 'A B', path: '/', selected: true, permission: [1], icon: 'fas fa-cube' },
+      { id: 2, name: 'A B C', path: '/odds-espnet', permission: [1], icon: 'fas fa-cube' },
+      { id: 3, name: 'CEV', path: '/odds-hda', icon: 'fas fa-cube', permission: [1, 3] },
+      { id: 4, name: 'Odds Sure', path: '/odds-sure', freeAccess: true, icon: 'fas fa-cube' },
+      { id: 5, name: 'Histórico', path: '/odd-history', permission: [1], icon: 'fas fa-list' },
+    ]
   }
   changeTitleHandler = title => {
     if (common.isUserInactive()) {
@@ -60,16 +66,10 @@ class App extends Component {
       this.setState({ title: title });
       return;
     }
-
-
-    if (!title.left) title.left = window.location.pathname === '/login' || <button type="button" title="Menu" className="btn btn-sm" onClick={this.showMenu}  ><i className="fas fa-bars"></i></button>;
+    if (!title.left) title.left = window.location.pathname === '/login' || <MenuIcon items={this.state.items}></MenuIcon>;
     this.setState({ title: title });
   }
-  showMenu = () => {
-    document.getElementById('menu-more').style.transform = 'translateX(0)';
-    document.getElementById('menu-panel').style.display = 'block';
 
-  }
   loadingShow = () => {
     this.setState({ loading: 'loading-show' });
   }
@@ -274,14 +274,14 @@ class App extends Component {
           </MyModal>
           <div className="navigation-bar row no-gutters" >
             <div className="col-12 row no-gutters">
-              <div className="col-auto col-sm text-left align-self-center" >{this.state.title.left}</div>
+              <div className="col-auto col-sm text-left align-self-center no-overflow mr-2" >{this.state.title.left}</div>
               <div className="col-auto title align-self-center" >
                 {this.state.title.center}
                 {this.state.data_loading_info && common.getUser() &&
                   <div className="show-md date-loading" >{formatDate(this.state.data_loading_info.date_finish, "DD/MM/YY HH:mm:ss")} ({this.state.data_loading_info.duration} seg.)</div>
                 }
               </div>
-              <div className="col text-right align-self-center">
+              <div className="col text-right align-self-center  no-overflow ml-2">
                 <div style={{ display: 'flex' }} className="justify-content-end" >
                   <div hidden={!common.getUser()}  >
                     <div className="loading-bar" hidden={!this.state.isLoading}>
@@ -306,7 +306,7 @@ class App extends Component {
               </div>
             </div>
           </div>
-          {window.location.pathname === '/login' || <Menu show={this.loadingShow} hide={this.loadingHide} />}
+          {window.location.pathname === '/login' || <Menu show={this.loadingShow} hide={this.loadingHide} items={this.state.items} />}
           <div id="master" className="page p-1">
             <Route path="/login" render={() => <Login changeTitle={this.changeTitleHandler} show={this.loadingShow} hide={this.loadingHide} />} />
             {permission === '1' &&

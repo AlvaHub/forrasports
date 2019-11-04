@@ -105,8 +105,8 @@ class OddsHDA extends Component {
         </div>
         <div className="margin-top-filter" ></div>
         <div id="list">
-          <div className="div-main table-responsive" >
-            <table id="table-main" className="table-main table-scroll" onClick={Filter.checkHideFilter} >
+          <div className="div-hda table-responsive" >
+            <table id="table-hda" className="table-hda table-scroll" onClick={Filter.checkHideFilter} >
               <thead>
                 <tr>
                   <th></th>

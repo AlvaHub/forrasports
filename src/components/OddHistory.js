@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import * as common from './Common';
 import MyModal from './MyModal';
 import CurrencyFormat from 'react-currency-format';
-import DayPickerInput from 'react-day-picker/DayPickerInput';
 import 'react-day-picker/lib/style.css';
-import MomentLocaleUtils, { formatDate, parseDate } from 'react-day-picker/moment';
+import { formatDate } from 'react-day-picker/moment';
 import 'moment/locale/pt-br';
+import '../css/OddsHistory.css';
 
 class OddHistory extends Component {
   constructor(props) {
@@ -53,7 +53,7 @@ class OddHistory extends Component {
       left: null, center: <div className="pointer" onClick={this.bindList.bind(this)}>Histórico</div>,
       right: <div>
         <button className="btn btn-secondary btn-sm mr-3 btn-loading hidden-xs" onClick={this.getResults.bind(this)} ><i className="fas fa-redo-alt" ></i></button>
-        <i className="fas fa-filter text-dark font-md show-md" onClick={this.showFilter.bind(this)}></i>
+        <i className="fas fa-filter text-dark font-md hidden-md" onClick={this.showFilter.bind(this)}></i>
       </div>
     });
   }
@@ -222,16 +222,16 @@ class OddHistory extends Component {
   }
   showFilter() {
     var css = document.getElementById('filter').className;
-    css = css.indexOf('hidden-md') > 0 ? 'filter' : 'filter hidden-md';
+    css = css.indexOf('show-md') > 0 ? 'filter' : 'filter show-md';
     document.getElementById('filter').className = css;
   }
   hideFilter() {
-    document.getElementById('filter').className = 'filter hidden-md';
+    document.getElementById('filter').className = 'filter show-md';
   }
   checkHideFilter = () => {
     var css = document.getElementById('filter').className;
-    if (css.indexOf('hidden-md') < 0) {
-      document.getElementById('filter').className = 'filter hidden-md';
+    if (css.indexOf('show-md') < 0) {
+      document.getElementById('filter').className = 'filter show-md';
       return true;
     }
     return false;
@@ -471,7 +471,7 @@ class OddHistory extends Component {
             </div>
           </div>
         </MyModal>
-        <div className="filter hidden-md" id="filter" >
+        <div className="filter show-md" id="filter" >
           <div className="row no-gutters">
             <div className="col-md-3 p-sm-1 align-self-center">
               <input name="text" value={this.state.filter.text} className="form-control form-control-sm block-inline"

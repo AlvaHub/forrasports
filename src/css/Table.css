@@ -1,0 +1,36 @@
+.table-scroll {width: 100%;}
+.table-scroll>thead tr{display: table;width: 100%;}
+.table-scroll>tbody{display: block;overflow-y:overlay;max-height: calc(var(--window)  - 200px);-webkit-overflow-scrolling: touch !important;}
+.table-scroll>tbody::-webkit-scrollbar{display: none}
+.table-scroll>tbody tr{display: table;width: 100%;border-collapse: collapse;border:none}
+
+.table-responsive::-webkit-scrollbar{display:block;width:1px;height:5px}
+.table-responsive::-webkit-scrollbar-track{background-color:rgb(32, 32, 32)}
+.table-responsive::-webkit-scrollbar-thumb{background-color:rgb(177, 177, 177)}
+
+/* TABLE */
+th{cursor: pointer;}
+.no-border-bottom th{border-bottom: none !important}
+.no-border-top th{border-top: none !important}
+table{margin-bottom: 0 !important;color: rgb(63, 63, 63)} 
+@media(min-width:576px){
+.table-hover tbody tr:hover {
+  background-color: rgb(253, 198, 97);cursor: pointer
+}
+}
+@media(max-width:576px){
+  .table-light.table-hover tbody tr:hover td {
+    border:none;
+ }
+ .table-light.table-hover tbody tr:hover {
+  background-color: none;
+}
+.table-hover tbody tr:hover {
+  background-color: none;
+}
+}
+td.middle, th.middle{vertical-align: middle !important}
+td.center, th.center{text-align: center !important}
+td.middle-center, th.middle-center{vertical-align: middle !important;text-align: center !important}
+td.top{vertical-align: top}
+.td-min{width:20%;text-align: center}

@@ -80,7 +80,7 @@ body:before {
 .underline{text-decoration: underline}
 .last-update{font-weight: 'normal'; font-size:11px; display:block;margin-top:-2px}
 .p-0-5{padding: 2px}
-.no-overflow{overflow: hidden;}
+.no-overflow{overflow: hidden;white-space: nowrap;}
 .no-focus:focus{outline-style: none !important;}
 .no-break{white-space: nowrap}
 .odd-atificial{font-weight: bold;color:#ffbb33 !important;cursor: pointer;}
@@ -118,10 +118,10 @@ input[type='text'],input[type='number'],select,textarea {  font-size: 16px;}
 .hidden-xs{display:none !important}
 }
 @media(min-width:769px){
-  .show-md{display:none}
+  .hidden-md{display:none}
   }
   @media(max-width:768px){
-  .hidden-md{display:none !important}
+  .show-md{display:none}
   }
   
 
@@ -156,93 +156,6 @@ input[type='text'],input[type='number'],select,textarea {  font-size: 16px;}
 .logo-icons .fa-baseball-ball{color:yellow}
 .logo-text{font-size: 30px;font-family: impact;padding:0.2rem;}
 
-/* ODDS */
-.div-odds, .table-bets{min-width: 1100px;overflow-x: auto;  }
-.table-odds.table-scroll>tbody{max-height: calc(var(--window)  - 125px)}
-
-.table-odds.table-scroll>tbody::-webkit-scrollbar{display: inherit}
-.table-odds.table-scroll>tbody::-webkit-scrollbar-thumb{background-color:gray}
-.table-bets.table-scroll>tbody::-webkit-scrollbar{display: inherit}
-.table-bets.table-scroll>tbody::-webkit-scrollbar-thumb{background-color:rgb(161, 161, 161)}
-.table-bets.table-scroll>tbody::-webkit-scrollbar-track{background-color:rgb(216, 216, 216)}
-@media(max-width:576px){
-  .div-odds,.table-bets{min-width:auto;overflow-x:auto}.div-odds table{min-width:800px}
-  .table-odds.table-scroll>tbody{max-height: calc(var(--window)  - 80px);}
-  .table-odds.table-scroll>tbody::-webkit-scrollbar{display: none}
-  .btn-loading{padding:2px;font-size:8pt;display:inline}
-}
-@media(min-width:577px){
-.table-odds tbody td:nth-child(1), .table-odds thead th:nth-child(1){width: 5%}
-.table-odds tbody td:nth-child(2), .table-odds thead th:nth-child(2){width: 6.5%}
-.table-odds tbody td:nth-child(3), .table-odds thead th:nth-child(3){width: 3.5%}
-.table-odds tbody td:nth-child(4), .table-odds thead th:nth-child(4){width: 19%}
-.table-odds tbody td:nth-child(5), .table-odds thead th:nth-child(5){width: 20%}
-.table-odds tbody td:nth-child(6), .table-odds thead th:nth-child(6){width: 12%}
-.table-odds tbody td:nth-child(7), .table-odds thead th:nth-child(7){width: 8%}
-.table-odds tbody td:nth-child(8), .table-odds thead th:nth-child(8){width: 8%}
-.table-odds tbody td:nth-child(9), .table-odds thead th:nth-child(9){width: 8%}
-.table-odds tbody td:nth-child(10), .table-odds thead th:nth-child(10){width: 8%}
-}
-
-@media(max-width:576px){
-  .table-odds tbody td:nth-child(1), .table-odds thead th:nth-child(1){width: 5%}
-  .table-odds tbody td:nth-child(2), .table-odds thead th:nth-child(2){width: 6%}
-  .table-odds tbody td:nth-child(3), .table-odds thead th:nth-child(3){width: 6%}
-  .table-odds tbody td:nth-child(4), .table-odds thead th:nth-child(4){width: 20%}
-  .table-odds tbody td:nth-child(5), .table-odds thead th:nth-child(5){width: 20%}
-  .table-odds tbody td:nth-child(6), .table-odds thead th:nth-child(6){width: 12%}
-  .table-odds tbody td:nth-child(7), .table-odds thead th:nth-child(7){width: 7%}
-  .table-odds tbody td:nth-child(8), .table-odds thead th:nth-child(8){width: 7%}
-  .table-odds tbody td:nth-child(9), .table-odds thead th:nth-child(9){width: 7%}
-  .table-odds tbody td:nth-child(10), .table-odds thead th:nth-child(10){width: 8%}
-}
- /* table bets */
- @media(min-width:577px){
-
-  .table-bets tbody td:nth-child(1), .table-bets thead th:nth-child(1){width: 5%}
-  .table-bets tbody td:nth-child(2), .table-bets thead th:nth-child(2){width: 6.5%}
-  .table-bets tbody td:nth-child(3), .table-bets thead th:nth-child(3){width: 3.5%}
-  .table-bets tbody td:nth-child(4), .table-bets thead th:nth-child(4){width: 19%}
-  .table-bets tbody td:nth-child(5), .table-bets thead th:nth-child(5){width: 20%}
-  .table-bets tbody td:nth-child(6), .table-bets thead th:nth-child(6){width: 12%}
-  .table-bets tbody td:nth-child(7), .table-bets thead th:nth-child(7){width: 8%}
-  .table-bets tbody td:nth-child(8), .table-bets thead th:nth-child(8){width: 8%}
-  .table-bets tbody td:nth-child(9), .table-bets thead th:nth-child(9){width: 8%}
-  .table-bets tbody td:nth-child(10), .table-bets thead th:nth-child(10){width: 8%}
-
-
- }
- @media(max-width:576px){
-
-  .table-bets tbody td:nth-child(1), .table-bets thead th:nth-child(1){width: 5%}
-  .table-bets tbody td:nth-child(2), .table-bets thead th:nth-child(2){width: 6.5%}
-  .table-bets tbody td:nth-child(3), .table-bets thead th:nth-child(3){width: 3.5%}
-  .table-bets tbody td:nth-child(4), .table-bets thead th:nth-child(4){width: 19%}
-  .table-bets tbody td:nth-child(5), .table-bets thead th:nth-child(5){width: 20%}
-  .table-bets tbody td:nth-child(6), .table-bets thead th:nth-child(6){width: 12%}
-  .table-bets tbody td:nth-child(7), .table-bets thead th:nth-child(7){width: 8%}
-  .table-bets tbody td:nth-child(8), .table-bets thead th:nth-child(8){width: 8%}
-  .table-bets tbody td:nth-child(9), .table-bets thead th:nth-child(9){width: 8%}
-  .table-bets tbody td:nth-child(10), .table-bets thead th:nth-child(10){width: 8%}
-  }
-.div-table-bets{position:fixed;bottom:0px;width:100%;left:0;padding:4px;transform: translateY(100%)}
-.div-table-bets.show{animation: a_table_bets 0.5s forwards;}
-.div-table-bets.hide{animation: a_table_bets_hidden 0.5s forwards;}
-@keyframes a_table_bets{
-  0%{transform: translateY(100%);}
-  100%{transform: translateY(0%);}
-}
-@keyframes a_table_bets_hidden{
-  0%{transform: translateY(0%)}
-  100%{transform: translateY(100%);}
-}
-
-.table-bets.table-scroll>tbody{max-height:calc((var(--window) / 2.2))}
-.table-bets tbody tr td{background-color: rgb(230, 230, 230);color:rgb(36, 36, 36);border:1px solid rgb(216, 216, 216);cursor: pointer;}
-.table-bets thead th{background-color: rgb(53, 53, 53);color:rgb(235, 235, 235);border:1px solid rgb(51, 51, 51)}
-.table-bets tbody tr:nth-of-type(even) td {
-  background-color: rgb(255, 255, 255);color:rgb(36, 36, 36);
-} 
 .user-odd-dark{font-weight: bold;color:rgb(255, 81, 0)}
 .loading-bar{display:inline-block;width:100px;margin-right: 5px;margin-left:5px;height:30px}
 .loading-bar .container{border:1px solid gray;border-radius: 5px;position:relative;height:20px;overflow: hidden;top:5px;}
@@ -262,56 +175,6 @@ input[type='text'],input[type='number'],select,textarea {  font-size: 16px;}
   20%{background-color: rgb(145, 145, 145);}
   100%{background-color: transparent}
 }
-/* ODDS HISTORY*/
-@media(min-width:577px){
-.table-odds-history.table-scroll>tbody::-webkit-scrollbar{display: inherit}
-.table-odds-history.table-scroll>tbody::-webkit-scrollbar-thumb{background-color:gray}
-}
-.table-odds-history{min-width: 1100px;overflow-x: auto;  }
-.table-odds-history.table-scroll>tbody{max-height: calc(var(--window)  - 125px)}
-@media(max-width:768px){
-  .table-odds-history.table-scroll>tbody{max-height: calc(var(--window)  - 80px)}
-  .table-odds-history.table-scroll>tbody::-webkit-scrollbar{display: none}
-}
-.table-odds-history tbody td:nth-child(1), .table-odds-history thead th:nth-child(1){width: 5%}
-.table-odds-history tbody td:nth-child(2), .table-odds-history thead th:nth-child(2){width: 10%}
-.table-odds-history tbody td:nth-child(3), .table-odds-history thead th:nth-child(3){width: 15%}
-.table-odds-history tbody td:nth-child(4), .table-odds-history thead th:nth-child(4){width: 15%}
-.table-odds-history tbody td:nth-child(5), .table-odds-history thead th:nth-child(5){width: 12%}
-.table-odds-history tbody td:nth-child(6), .table-odds-history thead th:nth-child(6){width: 7%}
-.table-odds-history tbody td:nth-child(7), .table-odds-history thead th:nth-child(7){width: 7%}
-.table-odds-history tbody td:nth-child(8), .table-odds-history thead th:nth-child(8){width: 7%}
-.table-odds-history tbody td:nth-child(9), .table-odds-history thead th:nth-child(9){width: 7%}
-.table-odds-history tbody td:nth-child(10), .table-odds-history thead th:nth-child(10){width: 10%}
-.table-odds-history tbody td:nth-child(11), .table-odds-history thead th:nth-child(11){width: 5%}
-.match-stats {color:rgb(177, 177, 177);background-color:rgb(26, 26, 26);font-size:12px;padding:0 !important}
-.match-stats .alternate{background-color:rgb(41, 41, 41)}
-.match-stats  b{margin-left: 5px;color:rgb(70, 70, 70);}
-.match-stats  b.text-total{color:rgb(177, 177, 177)}
-.match-stats .title{font-weight: bold;font-size:14px;text-align: center}
-.match-stats .item, .match-stats .alternate{position:relative;padding-bottom:3px;text-align:center;font-size:10pt;font-weight: bold }
-/* .match-stats .title{position:absolute;top:50%;left:50%;transform: translate(-50%, -50%);font-family:impact;font-size:14pt;opacity: 0.8} */
-
-.table-odds-history td.result{text-align: center;font-weight: bold;}
-.table-odds-history td.result span{margin-left:-8px}
-.table-odds-history td.result.W, .result-W{background-color: #00C851;color:white}
-.table-odds-history td.result.L, .result-L{background-color: #ce3636;color:white}
-.table-odds-history td.result.AN, .result-AN{background-color:gray;color:white}
-.table-odds-history td.result.HW, .result-HW{background: linear-gradient(to right,#00C851, rgba(0, 200, 81, 0.1),rgba(0, 200, 81, 0.1));color:white}
-.table-odds-history td.result.HL, .result-HL{background: linear-gradient(to right,#ce3636,rgba(206, 54, 54, 0.1),rgba(206, 54, 54, 0.1));color:white}
-.result-label{cursor:pointer;display: inline-block;margin: 0 3px 0 3px;min-width:30px;padding:4px;text-align: center;border-radius: 5px;border:1px solid rgb(187, 187, 187);font-weight: bold}
-.result-label.result-HW{background: linear-gradient(to right,#00C851,rgb(83, 83, 83))}
-.result-label.result-HL{background: linear-gradient(to right,#ce3636,rgb(83, 83, 83))}
-.W{color: #00C851;}
-.L{color: #ce3636;}
-.AN{color: gray;}
-.HW{color: rgb(106, 153, 125);}
-.HL{color: #c77e7e;}
-.user-odd{font-weight: bold;color:rgb(226, 175, 79)}
- /* ODDS GROUPED */
- .table-odds-group td b {float:right}
-
-
 /* BLACK PANEL */
 .panel{cursor:pointer;position: absolute;left:0;top:0;font-size:12pt;color:rgb(170, 170, 170);background-color:rgba(0, 0, 0, 0.8);height:100%;width:100%;z-index:10;display:none;transform: translateY(-100%)}
 .panel i{font-size: 16pt}
@@ -339,37 +202,7 @@ input[type='text'],input[type='number'],select,textarea {  font-size: 16px;}
 .btn-back{cursor: pointer;}
 @media(min-width:576px){.btn-back:hover{color:orange} }
 .rounded{border-radius: 10px;overflow: hidden;}
-/* TABLE */
-.no-border-bottom th{border-bottom: none !important}
-.no-border-top th{border-top: none !important}
-table{margin-bottom: 0 !important;color: rgb(63, 63, 63)} 
-@media(min-width:576px){
-.table-hover tbody tr:hover {
-  background-color: rgb(253, 198, 97);cursor: pointer
-}
-/* .table-light.table-hover tbody tr:hover {
-  background-color: rgb(141, 160, 175) !important;cursor: pointer
-}
-.table-light.table-hover tbody tr:hover td {
-   border:1px solid rgb(141, 160, 175)!important;
-} */
-}
-@media(max-width:576px){
-  .table-light.table-hover tbody tr:hover td {
-    border:none;
- }
- .table-light.table-hover tbody tr:hover {
-  background-color: none;
-}
-.table-hover tbody tr:hover {
-  background-color: none;
-}
-}
-td.middle, th.middle{vertical-align: middle !important}
-td.center, th.center{text-align: center !important}
-td.middle-center, th.middle-center{vertical-align: middle !important;text-align: center !important}
-td.top{vertical-align: top}
-.td-min{width:20%;text-align: center}
+
 .bg-red{font-weight:bold;background-color:#ff4444 !important}
 .bg-green{font-weight:bold;background-color:#00C851 !important}
 .bg-yellow{font-weight:bold;background-color:#e2a52a !important;}
@@ -387,20 +220,6 @@ td.top{vertical-align: top}
 .yellow{font-weight:bold;color:#e2a52a !important}
 .yellow-dark{font-weight:bold;color:#bb8821 !important}
 .div-table{border-radius: 0px;overflow: hidden;}
-/* .table-light{background-color: transparent;}
-.table-light td{border:1px solid rgb(33, 59, 94);font-weight: normal}
-.table-light thead th{background-color: transparent;color:rgb(255, 255, 255);border:1px solid transparent;border-bottom:1px solid rgb(33, 59, 94)}
-.table-light tbody tr:nth-of-type(odd) {
-  background-color: transparent;color:white
-}
-.table-light tbody tr:nth-of-type(even) {
-  background-color: rgba(31, 49, 77, 0.5);color:rgb(228, 228, 228)
-} */
-.table-scroll {width: 100%;}
-.table-scroll>thead tr{display: table;width: 100%;}
-.table-scroll>tbody{display: block;overflow-y:overlay;max-height: calc(var(--window)  - 200px);-webkit-overflow-scrolling: touch !important;}
-.table-scroll>tbody::-webkit-scrollbar{display: none}
-.table-scroll>tbody tr{display: table;width: 100%;border-collapse: collapse;border:none}
 
 /* BGs */
 .text-gray{color:#292929}
@@ -428,6 +247,7 @@ td.top{vertical-align: top}
 .hidden{display: none}
 .block{display: block}
 .text-orange{color:orange}
+
 /* MENU */
 .navigation-bar{font-size:12pt;height: 40px;padding: 3px;position:fixed;top:0;z-index: 1000;background-color: rgb(231, 231, 231);width:100%;color:rgb(52, 60, 82);font-weight: bold}
 .navigation-bar .title{text-align: center;}
@@ -447,15 +267,9 @@ td.top{vertical-align: top}
 .menu-more .items .item.active{color:orange}
 .menu-more .items .item .fa-star{position: absolute;top:11px;right:10px}
 
-@keyframes a_menu_come{
-  from{transform:translateY(100%)}
-  to{transform:translateX(0)}
-}
-@keyframes a_menu_effect{
-  0%{}
-  20%{color:orange;opacity: 0.9;}
-  100%{color:rgb(201, 80, 0);opacity: 1;}
-}
+.menu-inline{font-size:9pt;margin-left:0.2rem;color:gray;white-space: nowrap;font-weight: bold;}
+.menu-inline .item{cursor:pointer;display: inline-block; margin-right: 0.3rem;padding:0.2rem 0.5rem 0.2rem 0.5rem;border-radius: 5px;}
+.menu-inline .item.active{color:rgb(81, 94, 112)}
 
 /* BORDERS  */
 .borders, .borders div{border:1px solid red !important}
@@ -490,7 +304,7 @@ button, button:focus, .btn, .btn:focus{outline:0 !important;box-shadow: none}
   from{transform:translateX(0)}
   to{transform:translateX(200);display: none}
 }
-th{cursor: pointer;}
+
 .App-logo {
   animation: App-logo-spin infinite 20s linear;
   height: 40vmin;

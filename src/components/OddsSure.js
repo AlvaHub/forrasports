@@ -5,6 +5,7 @@ import { formatDate } from 'react-day-picker/moment';
 import MyModal from './MyModal';
 import CurrencyFormat from 'react-currency-format';
 import 'moment/locale/pt-br';
+import '../css/OddsSure.css';
 
 class OddsSure extends Component {
   constructor(props) {
@@ -458,7 +459,7 @@ class OddsSure extends Component {
         <div className="margin-top-filter" ></div>
         <div id="list">
           <div className="div-odds-sure table-responsive" >
-            <table id="table-odds-sure" className="table-odds-sure table-scroll table-odds w-100" onClick={this.checkHideFilter} >
+            <table id="table-odds-sure" className="table-odds-sure table-scroll" onClick={this.checkHideFilter} >
               <thead  >
                 <tr>
                   <th></th>

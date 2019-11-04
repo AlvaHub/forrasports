@@ -4,32 +4,46 @@ import { withRouter } from 'react-router-dom';
 
 class MenuIcon extends Component {
 
-    showMore(e) {
-        e.stopPropagation();
-        document.getElementById('menu-more').className = 'menu-more menu-come';
-        //document.body.addEventListener('click', common.hideMore);
-        setTimeout(() => {
-            document.body.className = 'no-overflow';
-        }, 600);
+    state = {
+        items: this.props.items
+    }
+    redirect = (item, e) => {
+
+        let path = item.path;
+        if (document.location.pathname !== path)
+            this.props.history.push(path);
+        else {
+            this.props.history.push('/default');
+            setTimeout(() => {
+                this.props.history.push(path);
+            }, 1);
+        }
+        this.state.items.forEach(x => x.selected = false);
+        item.selected = true;
+    }
+    showMenu = () => {
+        document.getElementById('menu-more').style.transform = 'translateX(0)';
+        document.getElementById('menu-panel').style.display = 'block';
     }
     render() {
 
-        let permission = common.getUser() ? common.getUser().permission : '0';
+        let permission = common.getUser() ? Number(common.getUser().permission) : 0;
+        let items = this.state.items.filter(x => x.freeAccess || x.permission.find(y => permission === y) != null);
 
         return (
-            <div className="font-sm pl-2 block-inline menu-btn"  >
-                <button type="button" title="Sair" className="btn btn-sm" onClick={() => { if (window.confirm('Deseja sair do sistema!')) { common.setUser(null); this.props.history.push('/login') } }} ><i className="fas fa-sign-out-alt"></i></button>
-                {permission === '1' &&
-                    <React.Fragment >
-                        <button type="button" title="Odds" className="btn btn-sm" onClick={() => { this.props.history.push('/') }} ><i className="fas fa-cube"></i></button>
-                        <button type="button" title="Odds Esportenet" className="btn btn-sm text-secondary" onClick={() => { this.props.history.push('/odds-espnet') }} ><i className="fas fa-cube"></i></button>
-                    </React.Fragment >}
-                <button type="button" title="Odds Sure Bet" className="btn btn-sm text-dark" onClick={() => { this.props.history.push('/odds-sure') }} ><i className="fas fa-cube"></i></button>
-                {permission === '1' &&
-                    <button type="button" title="Histórico" className="btn btn-sm" onClick={() => { this.props.history.push('/odd-history') }} ><i className="fas fa-cubes"></i></button>
-                }
+            <div>
+                <div className="menu-inline align-items-center show-md"  >
+                    {items.map((x, i) =>
+                        <div id={x.id} className={x.selected ? 'item active' : 'item'} key={i} onClick={this.redirect.bind(this, x)} >
+                            <i className={x.icon}></i> {x.name}
+                        </div>
+                    )}
+                    <div class="item" onClick={() => { if (window.confirm('Deseja sair do sistema!')) { common.setUser(null); this.props.history.push('/login') } }} >
+                        <i className="fas fa-sign-out-alt"></i> Sair
+                    </div>
+                </div>
+                <button type="button" title="Menu" className="btn btn-sm hidden-md" onClick={this.showMenu}  ><i className="fas fa-bars"></i></button>
             </div>
-            // <div onClick={showMore}  ><i className="fas fa-bars ml-2"></i><div></div></div>
         )
     }
 }

@@ -1,32 +1,31 @@
-.div-odds-espnet, .table-bets{min-width: 1450px;overflow-x: auto;  }
-.table-odds-espnet.table-scroll>tbody{max-height: calc(var(--window)  - 125px)}
+.table-espnet{min-width: 1450px;overflow-x: overlay;  }
+.table-espnet.table-scroll>tbody{max-height: calc(var(--window)  - 126px)}
 
-.table-odds-espnet.table-scroll>tbody::-webkit-scrollbar{display: inherit}
-.table-odds-espnet.table-scroll>tbody::-webkit-scrollbar-thumb{background-color:gray}
+.table-espnet.table-scroll>tbody::-webkit-scrollbar{display: inherit}
+.table-espnet.table-scroll>tbody::-webkit-scrollbar-thumb{background-color:gray}
 .table-bets.table-scroll>tbody::-webkit-scrollbar{display: inherit}
 .table-bets.table-scroll>tbody::-webkit-scrollbar-thumb{background-color:rgb(161, 161, 161)}
 .table-bets.table-scroll>tbody::-webkit-scrollbar-track{background-color:rgb(216, 216, 216)}
 @media(max-width:576px){
-  .div-odds,.table-bets{min-width:auto;overflow-x:auto}.div-odds table{min-width:800px}
-  .table-odds-espnet.table-scroll>tbody{max-height: calc(var(--window)  - 80px);}
-  .table-odds-espnet.table-scroll>tbody::-webkit-scrollbar{display: none}
-  .btn-loading{padding:2px;font-size:8pt;display:inline}
+  .div-espnet{min-width:auto;overflow-x:overlay}
+  .table-espnet.table-scroll>tbody{max-height: calc(var(--window)  - 80px);}
+  .table-espnet.table-scroll>tbody::-webkit-scrollbar{display: none}
 }
-.table-odds-espnet tbody td:nth-child(1), .table-odds-espnet thead th:nth-child(1){width: 3%}
-.table-odds-espnet tbody td:nth-child(2), .table-odds-espnet thead th:nth-child(2){width: 7%}
-.table-odds-espnet tbody td:nth-child(3), .table-odds-espnet thead th:nth-child(3){width: 5%}
-.table-odds-espnet tbody td:nth-child(4), .table-odds-espnet thead th:nth-child(4){width: 15%}
-.table-odds-espnet tbody td:nth-child(5), .table-odds-espnet thead th:nth-child(5){width: 15%}
-.table-odds-espnet tbody td:nth-child(6), .table-odds-espnet thead th:nth-child(6){width: 10%}
-.table-odds-espnet tbody td:nth-child(7), .table-odds-espnet thead th:nth-child(7){width: 5%}
-.table-odds-espnet tbody td:nth-child(8), .table-odds-espnet thead th:nth-child(8){width: 5%}
-.table-odds-espnet tbody td:nth-child(9), .table-odds-espnet thead th:nth-child(9){width: 5%}
-.table-odds-espnet tbody td:nth-child(10), .table-odds-espnet thead th:nth-child(10){width: 5%}
-.table-odds-espnet tbody td:nth-child(11), .table-odds-espnet thead th:nth-child(11){width: 5%}
-.table-odds-espnet tbody td:nth-child(11), .table-odds-espnet thead th:nth-child(11){width: 5%}
-.table-odds-espnet tbody td:nth-child(12), .table-odds-espnet thead th:nth-child(12){width: 5%}
-.table-odds-espnet tbody td:nth-child(13), .table-odds-espnet thead th:nth-child(13){width: 5%}
-.table-odds-espnet tbody td:nth-child(14), .table-odds-espnet thead th:nth-child(14){width: 5%}
+.table-espnet tbody td:nth-child(1), .table-espnet thead th:nth-child(1){width: 3%}
+.table-espnet tbody td:nth-child(2), .table-espnet thead th:nth-child(2){width: 7%}
+.table-espnet tbody td:nth-child(3), .table-espnet thead th:nth-child(3){width: 5%}
+.table-espnet tbody td:nth-child(4), .table-espnet thead th:nth-child(4){width: 15%}
+.table-espnet tbody td:nth-child(5), .table-espnet thead th:nth-child(5){width: 15%}
+.table-espnet tbody td:nth-child(6), .table-espnet thead th:nth-child(6){width: 10%}
+.table-espnet tbody td:nth-child(7), .table-espnet thead th:nth-child(7){width: 5%}
+.table-espnet tbody td:nth-child(8), .table-espnet thead th:nth-child(8){width: 5%}
+.table-espnet tbody td:nth-child(9), .table-espnet thead th:nth-child(9){width: 5%}
+.table-espnet tbody td:nth-child(10), .table-espnet thead th:nth-child(10){width: 5%}
+.table-espnet tbody td:nth-child(11), .table-espnet thead th:nth-child(11){width: 5%}
+.table-espnet tbody td:nth-child(11), .table-espnet thead th:nth-child(11){width: 5%}
+.table-espnet tbody td:nth-child(12), .table-espnet thead th:nth-child(12){width: 5%}
+.table-espnet tbody td:nth-child(13), .table-espnet thead th:nth-child(13){width: 5%}
+.table-espnet tbody td:nth-child(14), .table-espnet thead th:nth-child(14){width: 5%}
 
  /* table bets */
  @media(min-width:577px){
@@ -62,9 +61,9 @@
 .div-table-bets.hide{animation: a_table_bets_hidden 0.5s forwards;}
 
 /* TABLE ESPNET */
-.table-odds-espnet {border-collapse: collapse}
-.table-odds-espnet th{padding:0.25rem;color:rgb(221, 221, 221);background-color: rgb(46, 51, 61);}
-.table-odds-espnet td{background-color: rgb(14, 18, 24);padding:0.25rem;color:rgb(221, 221, 221);border:1px solid rgb(27, 35, 46)}
-.table-odds-espnet tr:hover td{background-color: rgb(22, 28, 37);cursor: pointer;}
-.table-odds-espnet tr:nth-child(odd):not(:hover) td{background-color: rgb(23, 30, 39)}
-.table-odds-espnet>tbody::-webkit-scrollbar{background-color: rgb(33, 41, 54)}
+.table-espnet {border-collapse: collapse}
+.table-espnet th{padding:0.25rem;color:rgb(221, 221, 221);background-color: rgb(46, 51, 61);}
+.table-espnet td{background-color: rgb(14, 18, 24);padding:0.25rem;color:rgb(221, 221, 221);border:1px solid rgb(27, 35, 46)}
+.table-espnet tr:hover td{background-color: rgb(22, 28, 37);cursor: pointer;}
+.table-espnet tr:nth-child(odd):not(:hover) td{background-color: rgb(23, 30, 39)}
+.table-espnet>tbody::-webkit-scrollbar{background-color: rgb(33, 41, 54)}

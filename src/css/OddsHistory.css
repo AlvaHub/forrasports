@@ -1,0 +1,49 @@
+/* ODDS HISTORY*/
+@media(min-width:577px){
+.table-odds-history.table-scroll>tbody::-webkit-scrollbar{display: inherit}
+.table-odds-history.table-scroll>tbody::-webkit-scrollbar-thumb{background-color:gray}
+}
+.table-odds-history{min-width: 1100px;overflow-x: auto;  }
+.table-odds-history.table-scroll>tbody{max-height: calc(var(--window)  - 125px)}
+@media(max-width:768px){
+  .table-odds-history.table-scroll>tbody{max-height: calc(var(--window)  - 80px)}
+  .table-odds-history.table-scroll>tbody::-webkit-scrollbar{display: none}
+}
+.table-odds-history tbody td:nth-child(1), .table-odds-history thead th:nth-child(1){width: 5%}
+.table-odds-history tbody td:nth-child(2), .table-odds-history thead th:nth-child(2){width: 10%}
+.table-odds-history tbody td:nth-child(3), .table-odds-history thead th:nth-child(3){width: 15%}
+.table-odds-history tbody td:nth-child(4), .table-odds-history thead th:nth-child(4){width: 15%}
+.table-odds-history tbody td:nth-child(5), .table-odds-history thead th:nth-child(5){width: 12%}
+.table-odds-history tbody td:nth-child(6), .table-odds-history thead th:nth-child(6){width: 7%}
+.table-odds-history tbody td:nth-child(7), .table-odds-history thead th:nth-child(7){width: 7%}
+.table-odds-history tbody td:nth-child(8), .table-odds-history thead th:nth-child(8){width: 7%}
+.table-odds-history tbody td:nth-child(9), .table-odds-history thead th:nth-child(9){width: 7%}
+.table-odds-history tbody td:nth-child(10), .table-odds-history thead th:nth-child(10){width: 10%}
+.table-odds-history tbody td:nth-child(11), .table-odds-history thead th:nth-child(11){width: 5%}
+.match-stats {color:rgb(177, 177, 177);background-color:rgb(26, 26, 26);font-size:12px;padding:0 !important}
+.match-stats .alternate{background-color:rgb(41, 41, 41)}
+.match-stats  b{margin-left: 5px;color:rgb(70, 70, 70);}
+.match-stats  b.text-total{color:rgb(177, 177, 177)}
+.match-stats .title{font-weight: bold;font-size:14px;text-align: center}
+.match-stats .item, .match-stats .alternate{position:relative;padding-bottom:3px;text-align:center;font-size:10pt;font-weight: bold }
+/* .match-stats .title{position:absolute;top:50%;left:50%;transform: translate(-50%, -50%);font-family:impact;font-size:14pt;opacity: 0.8} */
+
+.table-odds-history td.result{text-align: center;font-weight: bold;}
+.table-odds-history td.result span{margin-left:-8px}
+.table-odds-history td.result.W, .result-W{background-color: #00C851;color:white}
+.table-odds-history td.result.L, .result-L{background-color: #ce3636;color:white}
+.table-odds-history td.result.AN, .result-AN{background-color:gray;color:white}
+.table-odds-history td.result.HW, .result-HW{background: linear-gradient(to right,#00C851, rgba(0, 200, 81, 0.1),rgba(0, 200, 81, 0.1));color:white}
+.table-odds-history td.result.HL, .result-HL{background: linear-gradient(to right,#ce3636,rgba(206, 54, 54, 0.1),rgba(206, 54, 54, 0.1));color:white}
+.result-label{cursor:pointer;display: inline-block;margin: 0 3px 0 3px;min-width:30px;padding:4px;text-align: center;border-radius: 5px;border:1px solid rgb(187, 187, 187);font-weight: bold}
+.result-label.result-HW{background: linear-gradient(to right,#00C851,rgb(83, 83, 83))}
+.result-label.result-HL{background: linear-gradient(to right,#ce3636,rgb(83, 83, 83))}
+.W{color: #00C851;}
+.L{color: #ce3636;}
+.AN{color: gray;}
+.HW{color: rgb(106, 153, 125);}
+.HL{color: #c77e7e;}
+.user-odd{font-weight: bold;color:rgb(226, 175, 79)}
+ /* ODDS GROUPED */
+ .table-odds-group td b {float:right}
+

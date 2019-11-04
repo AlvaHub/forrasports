@@ -5,6 +5,7 @@ import { formatDate } from 'react-day-picker/moment';
 import MyModal from './MyModal';
 import CurrencyFormat from 'react-currency-format';
 import 'moment/locale/pt-br';
+import '../css/OddsAB.css';
 
 class Odds extends Component {
   constructor(props) {

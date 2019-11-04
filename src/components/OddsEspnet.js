@@ -5,6 +5,7 @@ import { formatDate } from 'react-day-picker/moment';
 import MyModal from './MyModal';
 import CurrencyFormat from 'react-currency-format';
 import 'moment/locale/pt-br';
+import '../css/OddsEspnet.css';
 
 class OddsEspnet extends Component {
   constructor(props) {
@@ -465,8 +466,8 @@ class OddsEspnet extends Component {
         </div>
         <div className="margin-top-filter" ></div>
         <div id="list">
-          <div className="div-odds-espnet table-responsive" >
-            <table id="table-odds-espnet" className="table-odds-espnet table-scroll table-odds w-100" onClick={this.checkHideFilter} >
+          <div className="div-espnet table-responsive" >
+            <table id="table-espnet" className="table-espnet table-scroll" onClick={this.checkHideFilter} >
               <thead  >
                 <tr>
                   <th></th>
