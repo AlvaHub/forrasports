@@ -35,11 +35,11 @@ class MenuIcon extends Component {
                 <div className="menu-inline align-items-center show-md"  >
                     {items.map((x, i) =>
                         <div id={x.id} className={x.selected ? 'item active' : 'item'} key={i} onClick={this.redirect.bind(this, x)} >
-                            <i className={x.icon}></i> {x.name}
+                            <i className={x.icon}></i>
                         </div>
                     )}
                     <div class="item" onClick={() => { if (window.confirm('Deseja sair do sistema!')) { common.setUser(null); this.props.history.push('/login') } }} >
-                        <i className="fas fa-sign-out-alt"></i> Sair
+                        <i className="fas fa-sign-out-alt"></i>
                     </div>
                 </div>
                 <button type="button" title="Menu" className="btn btn-sm hidden-md" onClick={this.showMenu}  ><i className="fas fa-bars"></i></button>

@@ -268,7 +268,7 @@ input[type='text'],input[type='number'],select,textarea {  font-size: 16px;}
 .menu-more .items .item .fa-star{position: absolute;top:11px;right:10px}
 
 .menu-inline{font-size:9pt;margin-left:0.2rem;color:gray;white-space: nowrap;font-weight: bold;}
-.menu-inline .item{cursor:pointer;display: inline-block; margin-right: 0.3rem;padding:0.2rem 0.5rem 0.2rem 0.5rem;border-radius: 5px;}
+.menu-inline .item{cursor:pointer;display: inline-block;background-color: rgb(211, 211, 211); margin-right: 0.2rem;padding:0.2rem 0.5rem 0.2rem 0.5rem;border-radius: 5px;}
 .menu-inline .item.active{color:rgb(81, 94, 112)}
 
 /* BORDERS  */
