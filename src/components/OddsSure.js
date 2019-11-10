@@ -485,7 +485,8 @@ class OddsSure extends Component {
                   </td>
                   <td>{formatDate(x.start, "DD/MM HH:mm")}</td>
                   <td><small>
-                    <span hidden={!x.updated_at} className={x.updated_at > 30 ? 'text-warning font-weight-bold' : ''}>{x.updated_at}/</span>
+                    <span hidden={!x.updated_at} className={x.updated_at > 30 ? 'text-warning font-weight-bold' : ''}>{x.updated_at}</span>
+                    <span> </span>
                     <span className={x.updated_at_espnet > 30 ? 'text-warning font-weight-bold' : ''}>{x.updated_at_espnet}</span>
                   </small></td>
                   <td>{x.league_name}</td>

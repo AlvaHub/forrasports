@@ -482,7 +482,7 @@ class Odds extends Component {
                     <i hidden={x.user_id !== '2'} className={'fas fa-user ml-1 float-right'}></i>
                   </td>
                   <td>{formatDate(x.start, "DD/MM HH:mm")}</td>
-                  <td><small className="load-minutes"><span className={x.updated_at > 30 ? 'text-warning font-weight-bold' : ''}>{x.updated_at}</span>/<span className={x.updated_at_pin > 30 ? 'text-warning font-weight-bold' : ''}>{x.updated_at_pin}</span></small></td>
+                  <td><small className="load-minutes"><span className={x.updated_at > 30 ? 'text-warning font-weight-bold' : ''}>{x.updated_at}</span><span className="hidden-xs">/</span><span className="show-xs"> </span><span className={x.updated_at_pin > 30 ? 'text-warning font-weight-bold' : ''}>{x.updated_at_pin}</span></small></td>
                   <td>{x.league_name}</td>
                   <td>{x.event_name}</td>
                   <td className={Number(x.diff_line) === 0 ? "" : "text-warning font-weight-bold"}>{x.odd_name}</td>
