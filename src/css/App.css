@@ -76,7 +76,8 @@ body:before {
   .modal-body{color:#ffbb33;min-width:768px}
 }
 /* GENERAL */
-
+table a{color:white;}
+table a:hover{color:orange;}
 .underline{text-decoration: underline}
 .last-update{font-weight: 'normal'; font-size:11px; display:block;margin-top:-2px}
 .p-0-5{padding: 2px}

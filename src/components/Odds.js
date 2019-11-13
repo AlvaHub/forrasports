@@ -45,10 +45,8 @@ class Odds extends Component {
     common.getData('data/odds.php?data=dates').then(
       (dates) => {
         dates.push(...this.state.datesPlus);
-        if (dates.length > 0) {
-          this.setState({ dates, filter_date: dates[0].id })
-          setTimeout(() => { this.bindList(); }, 1);
-        }
+        this.setState({ dates, filter_date: dates[0].id })
+        setTimeout(() => { this.bindList(); }, 1);
       }
     );
     //GET FILTER CUSTOM
@@ -75,11 +73,19 @@ class Odds extends Component {
   bindList() {
     this.props.show();
     let userId = common.getUser().id;
+    //Data
     common.getData('data/odds.php?date=' + this.state.filter_date + '&user_id=' + userId).then((items) => {
       let bets = items.filter(x => x.user_id !== null);
       this.setState({ itemsAll: items.filter(x => x.user_id === null), bets });
       setTimeout(() => { this.filterImportant() }, 1);
     });
+    //Dates
+    common.getData('data/odds.php?data=dates').then(
+      (dates) => {
+        dates.push(...this.state.datesPlus);
+        this.setState({ dates })
+      }
+    );
   }
   componentDidUpdate() {
 
@@ -103,7 +109,8 @@ class Odds extends Component {
     filter_bet365Greater: "0",
     filter_date: "0",
     dates: [{ id: '0', name: 'Carregando...' }],
-    datesPlus: [{ id: 'green', name: '< 0.85' }, { id: 'yellow', name: '< 0.90' }, { id: 'red', name: '< 0.93' },],
+    datesPlus: [{ id: '48hs', name: 'Importantes 48hs' }],
+    datesPlusOld: [{ id: 'green', name: '< 0.85' }, { id: 'yellow', name: '< 0.90' }, { id: 'red', name: '< 0.93' },],
     minutes: [],
     view_bets: null
   }
@@ -487,7 +494,7 @@ class Odds extends Component {
                   <td>{x.event_name}</td>
                   <td className={Number(x.diff_line) === 0 ? "" : "text-warning font-weight-bold"}>{x.odd_name}</td>
                   <td>{common.odd365(x.odd_365)}</td>
-                  <td>{x.odd_pin}</td>
+                  <td>{x.pin_link ? <a href={x.pin_link} target="_blank">{x.odd_pin}</a> : x.odd_pin}</td>
                   <td className={this.formatP365(x.pin365)}>{x.pin365} </td>
                   <td>{x.percent}</td>
                 </tr>)}
