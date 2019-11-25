@@ -490,7 +490,7 @@ class Odds extends Component {
                   </td>
                   <td>{formatDate(x.start, "DD/MM HH:mm")}</td>
                   <td><small className="load-minutes"><span className={x.updated_at > 30 ? 'text-warning font-weight-bold' : ''}>{x.updated_at}</span><span className="hidden-xs">/</span><span className="show-xs"> </span><span className={x.updated_at_pin > 30 ? 'text-warning font-weight-bold' : ''}>{x.updated_at_pin}</span></small></td>
-                  <td>{x.league_name}</td>
+                  <td className={x.league_name === 'NBA' || x.league_name === 'NFL' ? x.league_name : '' }>{x.league_name}</td>
                   <td>{x.event_name}</td>
                   <td className={Number(x.diff_line) === 0 ? "" : "text-warning font-weight-bold"}>{x.odd_name}</td>
                   <td>{common.odd365(x.odd_365)}</td>
@@ -526,7 +526,10 @@ class Odds extends Component {
                       <td><small>{x.updated_at}/{x.updated_at_pin}</small></td>
                       <td>{x.league_name}</td>
                       <td>{x.event_name}</td>
-                      <td>{x.odd_name}</td>
+                      <td>
+                        <div>{x.odd_name}</div>
+                        {x.odd_name !== x.user_odd_name && <div className="text-secondary">{x.user_odd_name}</div>}
+                      </td>
                       <td className={(Number(x.user_odd_365) === Number(x.odd_365) ? '' : (Number(x.user_odd_365) > Number(x.odd_365) ? 'text-white bg-success ' : 'text-white bg-red'))} >
                         {common.odd365(x.odd_365)}
                         <div>{common.odd365(x.user_odd_365)}</div>

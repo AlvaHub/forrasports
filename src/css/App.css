@@ -221,7 +221,8 @@ input[type='text'],input[type='number'],select,textarea {  font-size: 16px;}
 .yellow{font-weight:bold;color:#e2a52a !important}
 .yellow-dark{font-weight:bold;color:#bb8821 !important}
 .div-table{border-radius: 0px;overflow: hidden;}
-
+.NBA{color:rgb(255, 115, 0);font-weight: bold;}
+.NFL{color:#00C851;font-weight: bold;}
 /* BGs */
 .text-gray{color:#292929}
 .text-red{color: rgb(243, 60, 60) !important}
