@@ -14,6 +14,7 @@ import OddHistory from './components/OddHistory'
 import OddsEspnet from './components/OddsEspnet'
 import OddsSure from './components/OddsSure'
 import OddsHDA from './components/OddsHDA'
+import Odds365_365 from './components/Odds365_365'
 import { formatDate } from 'react-day-picker/moment';
 import MyModal from './components/MyModal';
 import { BrowserRouter, Route } from 'react-router-dom'
@@ -57,7 +58,8 @@ class App extends Component {
       { id: 2, name: 'A B C D', path: '/odds-espnet', permission: [1], icon: 'fas fa-cube' },
       { id: 3, name: 'CEV', path: '/odds-hda', icon: 'fas fa-cube', permission: [1, 3] },
       { id: 4, name: 'Odds Sure', path: '/odds-sure', freeAccess: true, icon: 'fas fa-cube' },
-      { id: 5, name: 'Histórico', path: '/odd-history', permission: [1], icon: 'fas fa-list' },
+      { id: 5, name: 'Odds A A', path: '/odds-a-a', freeAccess: true, icon: 'fas fa-cube' },
+      { id: 6, name: 'Histórico', path: '/odd-history', permission: [1], icon: 'fas fa-list' },
     ]
   }
   changeTitleHandler = title => {
@@ -322,6 +324,7 @@ class App extends Component {
               <Route path="/" exact render={() => { return common.getUser() && <Odds setChild={this.setChild} changeTitle={this.changeTitleHandler} show={this.loadingShow} hide={this.loadingHide} /> }} />
             }
             <Route path="/odds-sure" render={() => <OddsSure setChild={this.setChild} changeTitle={this.changeTitleHandler} show={this.loadingShow} hide={this.loadingHide} />} />
+            <Route path="/odds-a-a" render={() => <Odds365_365 setChild={this.setChild} changeTitle={this.changeTitleHandler} show={this.loadingShow} hide={this.loadingHide} />} />
           </div>
           <div className={'loading ' + this.state.loading} ><img src={loadingImage} alt="" /></div>
         </React.Fragment >

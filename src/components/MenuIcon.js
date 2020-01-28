@@ -37,7 +37,7 @@ class MenuIcon extends Component {
                         <i className="fas fa-bars"></i>
                     </div>
                     {items.map((x, i) =>
-                        <div id={x.id} className={x.selected ? 'item active' : 'item'} key={i} onClick={this.redirect.bind(this, x)} >
+                        <div id={x.id} title={x.name} className={x.selected ? 'item active' : 'item'} key={i} onClick={this.redirect.bind(this, x)} >
                             <i className={x.icon}></i>
                         </div>
                     )}
