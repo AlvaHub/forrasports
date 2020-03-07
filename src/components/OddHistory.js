@@ -7,6 +7,7 @@ import { formatDate } from 'react-day-picker/moment';
 import 'moment/locale/pt-br';
 import '../css/OddsHistory.css';
 
+
 class OddHistory extends Component {
   constructor(props) {
     super(props);
@@ -346,25 +347,10 @@ class OddHistory extends Component {
       return alert('Senha inválida!');
 
     document.getElementById('report_password').value = '';
-    this.setState({ report_password: false });
+    this.setState({ report_password: false, showModal : false });
 
-    this.props.show();
-    var that = this;
-    common.getData('data/oddhistory.php?data=min365_maxpin').then(function (data) {
-      that.props.hide();
-      if (data === 1) {
-        var link = document.createElement('a');
-        link.download = 'first365_lastPin.csv';
-        link.href = common.api_url + '/upload/first365_lastPin.csv';
-        link.click();
-      }
-      else {
-        alert('Houve um erro ao gerar o relatório!');
-      }
-    });
+    this.props.createReport();
   }
-
-
   render() {
 
     return (

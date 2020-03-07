@@ -2,7 +2,7 @@ import React from 'react'
 
 var lastScroll = 0;
 
-export var api_url = (window.location.hostname === 'localhost' ? 'http://api.betpoint:8001/betmix_web/' : 'https://forrasports.websiteseguro.com/api/');
+export var api_url = (window.location.hostname === 'localhost1' ? 'http://api.betpoint:8001/betmix_web/' : 'https://forrasports.websiteseguro.com/api/');
 
 export function scrollTop() {
     lastScroll = window.scrollY;
@@ -16,7 +16,10 @@ export function scrollLast() {
     }, 1)
 }
 export function getData(path) {
-    return fetch(api_url + path).then(data => data.json());
+    return fetch(api_url + path).then(data => {
+            return data.json().catch(() => 0);
+    });
+
 }
 export function postData(path, dataInput) {
     return fetch(api_url + path, {
@@ -94,8 +97,8 @@ export function getUser() {
     let user = JSON.parse(userJson);
     return user;
 }
-export function isUserInactive(){
-   return !getUser() || getUser().id == 2;
+export function isUserInactive() {
+    return !getUser() || getUser().id == 2;
 }
 Date.prototype.addDays = function (days) {
     var date = new Date(this.valueOf());

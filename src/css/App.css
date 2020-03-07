@@ -76,6 +76,7 @@ body:before {
   .modal-body{color:#ffbb33;min-width:768px}
 }
 /* GENERAL */
+.flex{display:flex}
 table a{color:white;}
 table a:hover{color:orange;}
 .underline{text-decoration: underline}
@@ -125,7 +126,9 @@ input[type='text'],input[type='number'],select,textarea {  font-size: 16px;}
   .show-md{display:none !important}
   }
   
-
+/* Loading Report */
+.loading-report{background-color: rgb(66, 134, 173);position: fixed;bottom:10px;right:10px;padding:0.2rem;border-radius: 5px;font-weight: bold;}
+.loading-report img{width:25px}
 .link:hover{color: orange;cursor: pointer;}
 @keyframes fade_in{  from{opacity: 0} to{opacity: 1}}
 /* INPUT ICON */

@@ -6,6 +6,7 @@ import Menu from './components/Menu';
 import Odds from './components/Odds';
 import Login from './components/Login';
 import loadingImage from './images/loading-spinner.svg';
+import loadingImageDark from './images/loading-spinner-dark.svg';
 import User from './components/admin/User';
 import Parameter from './components/admin/Parameter';
 import * as common from './components/Common';
@@ -18,13 +19,14 @@ import Odds365_365 from './components/Odds365_365'
 import { formatDate } from 'react-day-picker/moment';
 import MyModal from './components/MyModal';
 import { BrowserRouter, Route } from 'react-router-dom'
-
+import { Observable, forkJoin } from 'rxjs';
 
 class App extends Component {
 
 
   constructor(props) {
     super(props);
+
 
     document.documentElement.style.setProperty('--window', `${window.innerHeight}px`);
     window.addEventListener('resize', () => {
@@ -68,7 +70,8 @@ class App extends Component {
       this.setState({ title: title });
       return;
     }
-    if (!title.left) title.left = window.location.pathname === '/login' || <MenuIcon items={this.state.items}></MenuIcon>;
+    if (!title.left) title.left = window.location.pathname === '/login'
+      || <MenuIcon items={this.state.items}></MenuIcon>;
     this.setState({ title: title });
   }
 
@@ -78,7 +81,55 @@ class App extends Component {
   loadingHide = () => {
     this.setState({ loading: '' });
   }
+  createReport = () => {
+
+    this.setState({ loadingReport: true });
+    let dateStart = new Date('2020/03/01');
+    let dateNow = new Date();
+    let dates = [];
+    while (dateStart.getTime() < dateNow.getTime()) {
+      dates.push(dateStart.getFullYear().toString().substr(2, 2) + (dateStart.getMonth() + 1).toString().padStart(2, '0'));
+      dateStart = new Date(dateStart.setMonth(dateStart.getMonth() + 1));
+    }
+    let promisses = [];
+    dates.forEach(x => {
+      promisses.push(common.getData('data/oddhistory.php?data=min365_maxpin_run_query&date=' + x));
+    });
+    let teste = forkJoin(promisses);
+    console.log("Generating Report...");
+    teste.subscribe(_ => {
+      console.log("Report Ready!");
+      common.getData('data/oddhistory.php?data=min365_maxpin&join=1').then((data) => {
+        console.log(data);
+        if (data === 1) {
+          this.createDownload();
+        }
+      });
+    });
+  }
+  createDownload = () => {
+    fetch(common.api_url + 'upload/first365_lastPin.csv')
+      .then(resp => resp.blob())
+      .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = 'first365_lastPin.csv';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        this.setState({ loadingReport: false });
+      })
+      .catch(() => {
+        this.setState({ loadingReport: false });
+        alert('Não foi possível fazer o download do arquivo!')
+      });
+  }
   componentDidMount() {
+
+    //this.createReport();
+
     common.setTheme();
     let minutes = [];
     for (let index = 1; index < 31; index++)
@@ -316,7 +367,7 @@ class App extends Component {
                 <Route path="/default" />
                 <Route path="/admin/user" render={() => <User changeTitle={this.changeTitleHandler} show={this.loadingShow} hide={this.loadingHide} />} />
                 <Route path="/admin/parameter" render={() => <Parameter changeTitle={this.changeTitleHandler} show={this.loadingShow} hide={this.loadingHide} />} />
-                <Route path="/odd-history" render={() => <OddHistory changeTitle={this.changeTitleHandler} show={this.loadingShow} hide={this.loadingHide} />} />
+                <Route path="/odd-history" render={() => <OddHistory createReport={this.createReport} changeTitle={this.changeTitleHandler} show={this.loadingShow} hide={this.loadingHide} />} />
                 <Route path="/odds-espnet" render={() => <OddsEspnet setChild={this.setChild} changeTitle={this.changeTitleHandler} show={this.loadingShow} hide={this.loadingHide} />} />
                 <Route path="/odds-hda" render={() => <OddsHDA setChild={this.setChild} changeTitle={this.changeTitleHandler} show={this.loadingShow} hide={this.loadingHide} />} />
               </React.Fragment >}
@@ -327,6 +378,7 @@ class App extends Component {
             <Route path="/odds-a-a" render={() => <Odds365_365 setChild={this.setChild} changeTitle={this.changeTitleHandler} show={this.loadingShow} hide={this.loadingHide} />} />
           </div>
           <div className={'loading ' + this.state.loading} ><img src={loadingImage} alt="" /></div>
+          <div className={'loading-report'} hidden={!this.state.loadingReport} ><img src={loadingImage} alt="" /> Gerando Relatório...</div>
         </React.Fragment >
       </BrowserRouter>
 
